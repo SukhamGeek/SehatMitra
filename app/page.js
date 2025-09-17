@@ -818,7 +818,7 @@ const EmergencyServices = () => {
                   COVID-19 Booster Due
                 </h4>
                 <p className="text-sm text-green-700 dark:text-green-300">
-                  It's time for your COVID-19 booster shot. Visit your nearest vaccination center.
+                  It&apos;s time for your COVID-19 booster shot. Visit your nearest vaccination center.
                 </p>
                 <button className="mt-2 px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
                   Book Appointment
