@@ -598,7 +598,7 @@ const EmergencyServices = () => {
       }
       
       if (lowerMessage.includes('fever') || lowerMessage.includes('temperature')) {
-        return ${t('empathyFever')} ${mockFAQs.find(f => f.category === 'fever').answer};
+       return `${t('empathyFever')} ${mockFAQs.find(f => f.category === 'fever').answer}`;
       }
       
       if (lowerMessage.includes('cough') || lowerMessage.includes('cold')) {
