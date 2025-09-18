@@ -407,36 +407,52 @@ const mockFirstAidGuides = [{
     },
 ];
 
+
+const mockFAQs = [{
+        question: 'What to do for fever?',
+        answer: 'For fever: Rest, drink plenty of fluids, use cold compress. If fever persists above 101°F for more than 3 days, consult a doctor immediately.',
+        category: 'fever'
+    },
+    {
+        question: 'How to prevent dengue?',
+        answer: 'Prevent dengue by: 1) Remove stagnant water 2) Use mosquito nets 3) Wear full sleeves 4) Use repellents. Seek medical help if you have high fever with body ache.',
+        category: 'prevention'
+    },
+    {
+        question: 'How to protect from seasonal flu?',
+        answer: 'Get a yearly flu vaccine, wash hands often, avoid touching your face, and stay home when sick. A healthy diet and good sleep also boost immunity.',
+        category: 'prevention'
+    }
+];
+
 const languages = [
     { code: 'en', name: 'English', native: 'English' },
     { code: 'hi', name: 'Hindi', native: 'हिंदी' },
     { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ' }
 ];
 
-// Utility functions
+// Utility functions (unchanged)
 const playSound = (text, language = 'en') => {
     if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = language === 'hi' ? 'hi-IN' : language === 'pa' ? 'pa-IN' : 'en-IN';
-        utterance.rate = 0.9;
+        utterance.rate = 0.8;
         window.speechSynthesis.speak(utterance);
     }
 };
 
 const startVoiceRecognition = (onResult, language = 'en') => {
-    // CORRECTED: Replaced alert with console.warn for better UX, as alerts are blocking.
-    if (!('webkitSpeechRecognition' in window)) {
-        console.warn('Voice recognition not supported in your browser.');
-        return null;
+    if ('webkitSpeechRecognition' in window) {
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.lang = language === 'hi' ? 'hi-IN' : language === 'pa' ? 'pa-IN' : 'en-IN';
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            onResult(transcript);
+        };
+        recognition.start();
+        return recognition;
     }
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = language === 'hi' ? 'hi-IN' : language === 'pa' ? 'pa-IN' : 'en-IN';
-    recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        onResult(transcript);
-    };
-    recognition.start();
-    return recognition;
+    return null;
 };
 
 // **CUSTOM SVG ICONS for a softer, more caring feel**
@@ -469,24 +485,33 @@ const CustomSehatMitraLogo = ({ className }) => ( <
     /svg>
 );
 
+// Loading skeleton component
+const SkeletonLoader = () => ( <
+    div className = "animate-pulse space-y-3" >
+    <
+    div className = "h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4" > < /div> <
+    div className = "h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2" > < /div> <
+    div className = "h-4 bg-gray-300 dark:bg-gray-600 rounded w-full" > < /div> <
+    /div>
+);
+
 // Error boundary component
 const ErrorMessage = ({ message, onRetry }) => ( <
-    div className = "bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-700 rounded-lg p-6 m-4 max-w-2xl mx-auto animate-fade-in" >
+    div className = "bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg p-4 mb-4" >
     <
-    div className = "flex flex-col items-center text-center" >
+    div className = "flex items-center" >
     <
-    AlertTriangle className = "h-10 w-10 text-red-500 mb-3" / >
+    AlertTriangle className = "h-5 w-5 text-red-500 mr-2" / >
     <
-    h3 className = "text-lg font-semibold text-red-800 dark:text-red-200" > An Error Occurred < /h3> <
-    p className = "mt-1 text-red-700 dark:text-red-300" > { message } < /p> {
+    p className = "text-red-700 dark:text-red-200" > { message } < /p> <
+    /div> {
         onRetry && ( <
             button onClick = { onRetry }
-            className = "mt-4 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors" >
+            className = "mt-2 px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600" >
             Try Again <
             /button>
         )
     } <
-    /div> <
     /div>
 );
 
@@ -497,7 +522,6 @@ const HealthcareApp = () => {
     const [language, setLanguage] = useState('en');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    // CORRECTED: Initialized error state to null. It will be used for global error display.
     const [error, setError] = useState(null);
     const [showWelcome, setShowWelcome] = useState(true);
 
@@ -517,7 +541,6 @@ const HealthcareApp = () => {
             }
         } catch (e) {
             console.error("Failed to parse user profile from localStorage", e);
-            setError("Could not load your saved profile.");
         }
         const welcomeTimer = setTimeout(() => {
             setShowWelcome(false);
@@ -532,7 +555,6 @@ const HealthcareApp = () => {
             setUserProfile(profile);
         } catch (e) {
             console.error("Failed to save user profile to localStorage", e);
-            setError("Your profile could not be saved.");
         }
     };
 
@@ -567,33 +589,6 @@ const HealthcareApp = () => {
         saveUserProfile
     };
 
-    const renderContent = () => {
-        if (error) {
-            return <ErrorMessage message = { error }
-            onRetry = {
-                () => setError(null) }
-            />;
-        }
-        switch (currentView) {
-            case 'dashboard':
-                return <Dashboard / > ;
-            case 'chatbot':
-                return <Chatbot / > ;
-            case 'hospitals':
-                return <Hospitals / > ;
-            case 'alerts':
-                return <Alerts / > ;
-            case 'profile':
-                return <Profile / > ;
-            case 'firstAid':
-                return <FirstAidGuide / > ;
-            case 'ashaWorkers':
-                return <AshaWorkerDirectory / > ;
-            default:
-                return <Dashboard / > ;
-        }
-    };
-
     return ( <
         AppContext.Provider value = { contextValue } >
         <
@@ -605,7 +600,7 @@ const HealthcareApp = () => {
         <
         Header / >
         <
-        main className = "pb-20" > { renderContent() } <
+        main className = "pb-20" > { currentView === 'dashboard' && < Dashboard / > } { currentView === 'chatbot' && < Chatbot / > } { currentView === 'hospitals' && < Hospitals / > } { currentView === 'alerts' && < Alerts / > } { currentView === 'profile' && < Profile / > } { currentView === 'firstAid' && < FirstAidGuide / > } { currentView === 'ashaWorkers' && < AshaWorkerDirectory / > } <
         /main> <
         Navigation / >
         <
@@ -779,8 +774,8 @@ const Dashboard = () => {
                     onClick = {
                         () => setCurrentView(card.view) }
                     className = { `group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg cursor-pointer 
-                                  transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl ${styles.shadow}
-                                  ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}` }
+                          transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl ${styles.shadow}
+                          ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}` }
                     style = {
                         { transitionDelay: `${index * 100}ms` } } >
                     <
@@ -934,22 +929,13 @@ const EmergencyServices = () => {
 
 // Health Tips Component
 const HealthTips = () => {
-    const { t, userProfile, setError } = useContext(AppContext);
+    const { t, userProfile } = useContext(AppContext);
     const [tips, setTips] = useState(t('healthTips'));
     const [isPersonalized, setIsPersonalized] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Default tips need to be updated when language changes
-    useEffect(() => {
-        if (!isPersonalized) {
-            setTips(t('healthTips'));
-        }
-    }, [t, isPersonalized]);
-
-
     const getPersonalizedTips = async() => {
         setIsLoading(true);
-        setError(null);
 
         const systemPrompt = `You are a health expert creating personalized tips for a user in rural Punjab, India.
         User's Age: ${userProfile.age || 'Not specified'}
@@ -975,12 +961,10 @@ const HealthTips = () => {
                 setTips(formattedTips);
                 setIsPersonalized(true);
             } else {
-                console.error("Gemini API Error: No content in response", result);
-                setError("Sorry, could not generate personalized tips right now.");
+                console.error("Gemini API Error: No content in response");
             }
         } catch (error) {
             console.error("Error fetching personalized tips:", error);
-            setError("There was a network problem. Please check your connection and try again.");
         } finally {
             setIsLoading(false);
         }
@@ -1000,8 +984,7 @@ const HealthTips = () => {
         /div> <
         button onClick = { getPersonalizedTips }
         disabled = { isLoading }
-        className = "flex-shrink-0 flex items-center text-xs font-semibold bg-white/50 text-green-700 dark:bg-black/20 dark:text-green-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors disabled:opacity-50" >
-        { isLoading ? < Loader2 className = "h-4 w-4 animate-spin mr-2" / > : < Sparkles className = "h-4 w-4 text-yellow-500 mr-2" / > } { t('getPersonalizedTips') } <
+        className = "flex-shrink-0 flex items-center text-xs font-semibold bg-white/50 text-green-700 dark:bg-black/20 dark:text-green-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors disabled:opacity-50" > { isLoading ? < Loader2 className = "h-4 w-4 animate-spin mr-2" / > : < Sparkles className = "h-4 w-4 text-yellow-500 mr-2" / > } { t('getPersonalizedTips') } <
         /button> <
         /div> <
         div className = "grid grid-cols-1 sm:grid-cols-2 gap-3" > {
@@ -1021,7 +1004,7 @@ const HealthTips = () => {
 
 // Chatbot Component
 const Chatbot = () => {
-    const { language, t, setError } = useContext(AppContext);
+    const { language, t } = useContext(AppContext);
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
     const [isListening, setIsListening] = useState(false);
@@ -1050,10 +1033,9 @@ const Chatbot = () => {
                 localStorage.setItem('sehatMitraChat', JSON.stringify(messages));
             } catch (e) {
                 console.error("Failed to save chat history", e);
-                setError("Could not save your chat history.");
             }
         }
-    }, [messages, setError]);
+    }, [messages]);
 
     const scrollToBottom = () => {
         messagesEndRef.current ? .scrollIntoView({ behavior: 'smooth' });
@@ -1091,19 +1073,16 @@ const Chatbot = () => {
                 return candidate.content.parts[0].text;
             } else {
                 console.error("Gemini API Error:", result);
-                setError(t('defaultResponse'));
                 return t('defaultResponse');
             }
         } catch (error) {
             console.error("Error calling Gemini API:", error);
-            setError("There was a network problem. Please check your connection.");
             return t('defaultResponse');
         }
     };
 
     const sendMessage = async() => {
         if (!inputMessage.trim()) return;
-        setError(null);
         const userMessage = { type: 'user', content: inputMessage, timestamp: new Date().toISOString() };
         setMessages(prev => [...prev, userMessage]);
         const currentInput = inputMessage;
@@ -1130,8 +1109,8 @@ const Chatbot = () => {
             setInputMessage(transcript);
             setIsListening(false);
         }, language);
-        // If recognition fails to start (e.g. not supported), reset the listening state.
         if (!recognition) {
+            alert('Voice recognition not supported in your browser');
             setIsListening(false);
         }
     };
@@ -1139,7 +1118,7 @@ const Chatbot = () => {
     const handleKeyPress = (e) => { if (e.key === 'Enter' && !isLoading) sendMessage(); };
 
     return ( <
-        div className = "max-w-4xl mx-auto px-4 py-6 h-[calc(100vh-120px)] flex flex-col animate-fade-in" >
+        div className = "max-w-4xl mx-auto px-4 py-6 h-screen flex flex-col animate-fade-in" >
         <
         div className = "bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-4 mb-4" >
         <
@@ -1238,11 +1217,6 @@ const Chatbot = () => {
         } <
         div ref = { messagesEndRef }
         /> <
-        /div> { /* IMPROVEMENT: Added disclaimer visible in the UI */ } <
-        div className = "px-4 pb-2 text-xs text-gray-500 dark:text-gray-400 text-center"
-        dangerouslySetInnerHTML = {
-            { __html: t('chatbotDisclaimer') } } >
-        <
         /div> { /* Input Area */ } <
         div className = "border-t border-gray-200 dark:border-gray-600 p-4" >
         <
@@ -1281,7 +1255,7 @@ const Chatbot = () => {
     );
 };
 
-// Hospitals Component
+// **HOSPITALS COMPONENT - REVERTED TO PREVIOUS VERSION + NEW BUTTON**
 const Hospitals = () => {
         const { t } = useContext(AppContext);
         const [loading, setLoading] = useState(true);
@@ -1427,7 +1401,7 @@ const Hospitals = () => {
                     );
                 };
 
-                // **ALERTS COMPONENT - REVAMPED**
+                // **ALERTS COMPONENT - COMPLETELY REVAMPED**
                 const Alerts = () => {
                     const { t } = useContext(AppContext);
 
@@ -1550,6 +1524,7 @@ const Hospitals = () => {
 
                 // Profile Component
                 const Profile = () => {
+                        // ... (This component remains unchanged from the previous version)
                         const { t, userProfile, saveUserProfile } = useContext(AppContext);
                         const [isEditing, setIsEditing] = useState(false);
                         const [tempProfile, setTempProfile] = useState(userProfile);
@@ -1576,8 +1551,8 @@ const Hospitals = () => {
                             <
                             dt className = "text-sm font-medium text-gray-500 dark:text-gray-400" > { label } < /dt> <
                             dd className = "mt-1 text-sm text-gray-900 dark:text-white" > {
-                                value || < span className = "text-gray-400 dark:text-gray-500" > { placeholder } < /span>} <
-                                /dd> <
+                                value || < span className = "text-gray-400 dark:text-gray-500" > { placeholder } < /span>}</dd >
+                                <
                                 /div>
                             );
 
@@ -1620,7 +1595,7 @@ const Hospitals = () => {
 
                                 {
                                     showSuccess && ( <
-                                        div className = "bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-3 mb-4 flex items-center animate-fade-in" >
+                                        div className = "bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-3 mb-4 flex items-center" >
                                         <
                                         CheckCircle className = "h-5 w-5 text-green-500 mr-2" / >
                                         <
@@ -1676,11 +1651,8 @@ const Hospitals = () => {
                                         div className = "flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700" >
                                         <
                                         button onClick = {
-                                            () => {
-                                                setIsEditing(false);
-                                                setTempProfile(userProfile);
-                                            }
-                                        }
+                                            () => { setIsEditing(false);
+                                                setTempProfile(userProfile); } }
                                         className = "px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500" >
                                         Cancel <
                                         /button> <
@@ -1736,6 +1708,7 @@ const Hospitals = () => {
 
                         // Navigation Component
                         const Navigation = () => {
+                            // ... (This component remains unchanged from the previous version)
                             const { currentView, setCurrentView, t } = useContext(AppContext);
                             const navItems = [
                                 { id: 'dashboard', icon: Home, label: t('navHome') },
@@ -1757,10 +1730,10 @@ const Hospitals = () => {
                                             onClick = {
                                                 () => setCurrentView(item.id) }
                                             className = { `flex flex-col items-center justify-center py-2 rounded-lg transition-colors w-20 ${
-                                currentView === item.id
-                                    ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/50'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400'
-                                }` } >
+                    currentView === item.id
+                      ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/50'
+                      : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400'
+                  }` } >
                                             <
                                             IconComponent className = "h-5 w-5 mb-1" / >
                                             <
