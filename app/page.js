@@ -420,7 +420,7 @@ const OutbreakAlertBar = () => {
   const textColor = isHighSeverity ? 'text-red-800 dark:text-red-200' : 'text-yellow-800 dark:text-yellow-200';
 
   return (
-    <div className={${bgColor} ${textColor} px-4 py-2 text-center text-sm}>
+    <div className={`{${bgColor}} {${textColor}} px-4 py-2 text-center text-sm`}>
       <AlertTriangle className="inline h-4 w-4 mr-1" />
       <span className="font-medium">{t('alert')}</span> {alert.cases} {t(alert.diseaseKey)} {t('casesIn')} {alert.area}
       <span className="ml-2 text-xs">• {t(alert.preventionKey)}</span>
@@ -479,7 +479,7 @@ const Dashboard = () => {
               className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:scale-105"
             >
               <div className="p-6">
-                <div className={inline-flex items-center justify-center w-12 h-12 ${card.color} text-white rounded-lg mb-4}>
+                <div className={`inline-flex items-center justify-center w-12 h-12 ${card.color} text-white rounded-lg mb-4`}>
                   <IconComponent className="h-6 w-6" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -509,7 +509,7 @@ const EmergencyServices = () => {
     ];
   
     const callEmergency = (number) => {
-      window.location.href = tel:${number};
+      window.location.href = 'tel:${number}';
     };
   
     return (
@@ -525,7 +525,7 @@ const EmergencyServices = () => {
               <button
                 key={index}
                 onClick={() => callEmergency(service.number)}
-                className={${service.color} hover:opacity-90 text-white rounded-lg p-4 flex items-center justify-center space-x-2 transition-all duration-200 font-semibold}
+                className={`{${service.color}} hover:opacity-90 text-white rounded-lg p-4 flex items-center justify-center space-x-2 transition-all duration-200 font-semibold`}
               >
                 <IconComponent className="h-5 w-5" />
                 <span>{service.name}</span>
@@ -602,11 +602,11 @@ const EmergencyServices = () => {
       }
       
       if (lowerMessage.includes('cough') || lowerMessage.includes('cold')) {
-        return ${t('empathyCough')} For cough and cold: Stay hydrated, get adequate rest, use steam inhalation, consume warm liquids like herbal tea. Avoid cold foods. If symptoms worsen or persist beyond a week, seek medical attention.;
+       return `${t('empathyCough')} For cough and cold: Stay hydrated, get adequate rest, use steam inhalation, consume warm liquids like herbal tea. Avoid cold foods. If symptoms worsen or persist beyond a week, seek medical attention.`;
       }
       
       if (lowerMessage.includes('stomach') || lowerMessage.includes('diarrhea')) {
-        return ${t('empathyStomach')} For stomach issues: Stay hydrated with ORS solution, eat light foods like rice and bananas, avoid spicy and oily foods. If symptoms include severe dehydration, blood in stool, or persist for more than 2 days, consult a doctor.;
+      return `${t('empathyStomach')} For stomach issues: Stay hydrated with ORS solution, eat light foods like rice and bananas, avoid spicy and oily foods. If symptoms include severe dehydration, blood in stool, or persist for more than 2 days, consult a doctor.`;
       }
       
       return t('defaultResponse');
@@ -673,8 +673,8 @@ const EmergencyServices = () => {
         <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col">
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message, index) => (
-              <div key={index} className={flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}}>
-                <div className={max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'}}>
+              <div key={index} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'}`}>
                   <p className="text-sm">{message.content}</p>
                   {message.type === 'bot' && (
                     <button onClick={() => speakMessage(message.content)} className="mt-2 text-xs text-blue-500 hover:text-blue-600 flex items-center">
@@ -703,8 +703,8 @@ const EmergencyServices = () => {
               <div className="flex-1 relative">
                 <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} onKeyPress={handleKeyPress} placeholder={t('chatbotInputPlaceholder')} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
               </div>
-              <button onClick={startVoiceInput} disabled={isListening} className={p-2 rounded-lg ${isListening ? 'bg-red-500 animate-pulse' : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'} text-gray-700 dark:text-gray-300}>
-                <Mic className="h-5 w-5" />
+             
+         <button onClick={startVoiceInput} disabled={isListening} className={`p-2 rounded-lg ${isListening ? 'bg-red-500 animate-pulse' : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'} text-gray-700 dark:text-gray-300`}>       <Mic className="h-5 w-5" />
               </button>
               <button onClick={sendMessage} disabled={!inputMessage.trim() || isLoading} className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
                 <Send className="h-5 w-5" />
@@ -758,7 +758,7 @@ const EmergencyServices = () => {
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className={inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${hospital.isOpen ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}}>
+                            <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${hospital.isOpen ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
                                 {hospital.isOpen ? t('open') : t('closed')}
                             </div>
                         </div>
@@ -771,12 +771,12 @@ const EmergencyServices = () => {
                                     <div className="font-medium text-gray-900 dark:text-white">{t(doctor.nameKey)}</div>
                                     <div className="text-sm text-gray-600 dark:text-gray-400">{t(doctor.specialtyKey)}</div>
                                 </div>
-                                <div className={w-2 h-2 rounded-full ${doctor.available ? 'bg-green-500' : 'bg-red-500'}}></div>
+                               <div className={`w-2 h-2 rounded-full ${doctor.available ? 'bg-green-500' : 'bg-red-500'}`}></div>
                             </div>
                         ))}</div>
                     </div>
                     <div className="flex space-x-3">
-                        <button onClick={() => window.location.href = tel:${hospital.phone}} className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center">
+                        <button onClick={() => window.location.href = `tel:${hospital.phone}`} className="...">
                             <Phone className="h-4 w-4 mr-2" />{t('callHospital')}
                         </button>
                         <button className="flex-1 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 flex items-center justify-center">
