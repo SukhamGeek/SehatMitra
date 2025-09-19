@@ -38,8 +38,8 @@ import {
 const AppContext = createContext();
 
 // **ADDED: Custom CSS for animations and new styles**
-const AppStyles = () => ( <
-    style > { `
+const AppStyles = () => (
+  <style>{`
     /* Keyframe Animations */
     @keyframes slide-in-left { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes slide-in-right { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -171,10 +171,8 @@ const AppStyles = () => ( <
     .welcome-screen-logo {
       animation: subtle-glow 3s infinite ease-in-out;
     }
-
-  ` } < /style>
+  `}</style>
 );
-
 
 // ADDED: Translations for multi-language support
 const translations = {
@@ -440,55 +438,48 @@ const startVoiceRecognition = (onResult, language = 'en') => {
 };
 
 // **CUSTOM SVG ICONS for a softer, more caring feel**
-const CustomSehatMitraLogo = ({ className }) => ( <
-    svg className = { className }
-    viewBox = "0 0 100 100"
-    fill = "none"
-    xmlns = "http://www.w3.org/2000/svg" >
-    <
-    path d = "M50 10C27.9086 10 10 27.9086 10 50C10 72.0914 27.9086 90 50 90C72.0914 90 90 72.0914 90 50C90 38.835 85.4925 28.7101 78.2104 21.2132"
-    stroke = "#4ade80"
-    strokeWidth = "6"
-    strokeLinecap = "round" / >
-    <
-    path d = "M50 35V65"
-    stroke = "#4ade80"
-    strokeWidth = "6"
-    strokeLinecap = "round" / >
-    <
-    path d = "M35 50H65"
-    stroke = "#4ade80"
-    strokeWidth = "6"
-    strokeLinecap = "round" / >
-    <
-    path d = "M70 20L80 30"
-    stroke = "#4ade80"
-    strokeWidth = "6"
-    strokeLinecap = "round" / >
-    <
-    /svg>
+const CustomSehatMitraLogo = ({ className }) => (
+  <svg
+    className={className}
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g
+      stroke="#4ade80"
+      strokeWidth="6"
+      strokeLinecap="round"
+    >
+      <path d="M50 10C27.9086 10 10 27.9086 10 50C10 72.0914 27.9086 90 50 90C72.0914 90 90 72.0914 90 50C90 38.835 85.4925 28.7101 78.2104 21.2132" />
+      <path d="M50 35V65" />
+      <path d="M35 50H65" />
+      <path d="M70 20L80 30" />
+    </g>
+  </svg>
 );
 
+
 // Error boundary component
-const ErrorMessage = ({ message, onRetry }) => ( <
-    div className = "bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-700 rounded-lg p-6 m-4 max-w-2xl mx-auto animate-fade-in" >
-    <
-    div className = "flex flex-col items-center text-center" >
-    <
-    AlertTriangle className = "h-10 w-10 text-red-500 mb-3" / >
-    <
-    h3 className = "text-lg font-semibold text-red-800 dark:text-red-200" > An Error Occurred < /h3> <
-    p className = "mt-1 text-red-700 dark:text-red-300" > { message } < /p> {
-        onRetry && ( <
-            button onClick = { onRetry }
-            className = "mt-4 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors" >
-            Try Again <
-            /button>
-        )
-    } <
-    /div> <
-    /div>
+const ErrorMessage = ({ message, onRetry }) => (
+  <div className="bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-700 rounded-lg p-6 m-4 max-w-2xl mx-auto animate-fade-in">
+    <div className="flex flex-col items-center text-center">
+      <AlertTriangle className="h-10 w-10 text-red-500 mb-3" />
+      <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">
+        An Error Occurred
+      </h3>
+      <p className="mt-1 text-red-700 dark:text-red-300">{message}</p>
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
+        >
+          Try Again
+        </button>
+      )}
+    </div>
+  </div>
 );
+
 
 // Main App Component
 const HealthcareApp = () => {
@@ -594,39 +585,45 @@ const HealthcareApp = () => {
         }
     };
 
-    return ( <
-        AppContext.Provider value = { contextValue } >
-        <
-        AppStyles / > { showWelcome && < WelcomeScreen / > } <
-        div className = { `transition-opacity duration-500 ${showWelcome ? 'opacity-0' : 'opacity-100'}` } >
-        <
-        div className = "aurora-background" > < /div> <
-        div className = "relative bg-gray-50/50 dark:bg-gray-900/50 min-h-screen" >
-        <
-        Header / >
-        <
-        main className = "pb-20" > { renderContent() } <
-        /main> <
-        Navigation / >
-        <
-        /div> <
-        /div> <
-        /AppContext.Provider>
-    );
-};
+  return (
+  <AppContext.Provider value={contextValue}>
+    <AppStyles />
+    {showWelcome && <WelcomeScreen />}
+    <div
+      className={`transition-opacity duration-500 ${
+        showWelcome ? "opacity-0" : "opacity-100"
+      }`}
+    >
+      <div className="aurora-background"></div>
+      <div className="relative bg-gray-50/50 dark:bg-gray-900/50 min-h-screen">
+        <Header />
+        <main className="pb-20">{renderContent()}</main>
+        <Navigation />
+      </div>
+    </div>
+  </AppContext.Provider>
+);
 
 const WelcomeScreen = () => {
-    const { darkMode } = useContext(AppContext);
-    return ( <
-        div className = { `welcome-screen animate-fade-in ${darkMode ? 'dark' : ''}` } >
-        <
-        CustomSehatMitraLogo className = "w-24 h-24 welcome-screen-logo" / >
-        <
-        p className = "mt-4 text-xl font-bold text-gray-700 dark:text-gray-300" > SehatMitra < /p> <
-        p className = "text-gray-500 dark:text-gray-400" > Your health companion < /p> <
-        /div>
-    );
+  const { darkMode } = useContext(AppContext);
+
+  return (
+    <div
+      className={`welcome-screen animate-fade-in ${
+        darkMode ? "dark" : ""
+      }`}
+    >
+      <CustomSehatMitraLogo className="w-24 h-24 welcome-screen-logo" />
+      <p className="mt-4 text-xl font-bold text-gray-700 dark:text-gray-300">
+        SehatMitra
+      </p>
+      <p className="text-gray-500 dark:text-gray-400">
+        Your health companion
+      </p>
+    </div>
+  );
 };
+
 
 // Header Component
 const Header = () => {
@@ -640,60 +637,63 @@ const Header = () => {
         setDarkMode(!darkMode);
     };
 
-    return ( <
-        header className = "bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-700/50" >
-        <
-        div className = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" >
-        <
-        div className = "flex justify-between items-center h-16" >
-        <
-        div className = "flex items-center space-x-2" >
-        <
-        CustomSehatMitraLogo className = "h-8 w-8 text-green-500" / >
-        <
-        h1 className = "text-xl font-bold text-gray-900 dark:text-white" > { t('appName') } < /h1> <
-        /div>
+    return (
+  <header className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-700/50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between items-center h-16">
+        {/* Logo and App Name */}
+        <div className="flex items-center space-x-2">
+          <CustomSehatMitraLogo className="h-8 w-8 text-green-500" />
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            {t("appName")}
+          </h1>
+        </div>
 
-        <
-        div className = "flex items-center space-x-2 sm:space-x-4" >
-        <
-        select value = { language }
-        onChange = { handleLanguageChange }
-        className = "text-sm border rounded-lg px-2 py-1 bg-white/50 dark:bg-gray-700/50 dark:text-white dark:border-gray-600" >
-        {
-            languages.map(lang => ( <
-                option key = { lang.code }
-                value = { lang.code } > { lang.native } < /option>
-            ))
-        } <
-        /select>
+        {/* Controls */}
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          {/* Language Selector */}
+          <select
+            value={language}
+            onChange={handleLanguageChange}
+            className="text-sm border rounded-lg px-2 py-1 bg-white/50 dark:bg-gray-700/50 dark:text-white dark:border-gray-600"
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.native}
+              </option>
+            ))}
+          </select>
 
-        <
-        button onClick = { toggleDarkMode }
-        className = "p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        aria - label = "Toggle theme" >
-        { darkMode ? < Sun className = "h-5 w-5" / > : < Moon className = "h-5 w-5" / > } <
-        /button>
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {darkMode ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </button>
 
-        <
-        button onClick = {
-            () => setCurrentView('profile') }
-        className = "p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        aria - label = "Open Profile" >
-        <
-        User className = "h-5 w-5" / >
-        <
-        /button> <
-        /div> <
-        /div> <
-        /div>
+          {/* Profile Button */}
+          <button
+            onClick={() => setCurrentView("profile")}
+            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Open Profile"
+          >
+            <User className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+    </div>
 
-        <
-        OutbreakAlertBar / >
-        <
-        /header>
-    );
-};
+    {/* Outbreak Alert Bar */}
+    <OutbreakAlertBar />
+  </header>
+);
+
 
 // Outbreak Alert Bar
 const OutbreakAlertBar = () => {
@@ -716,16 +716,15 @@ const OutbreakAlertBar = () => {
     const bgColor = isHighSeverity ? 'bg-red-100 dark:bg-red-900/80' : 'bg-yellow-100 dark:bg-yellow-900/80';
     const textColor = isHighSeverity ? 'text-red-800 dark:text-red-200' : 'text-yellow-800 dark:text-yellow-200';
 
-    return ( <
-        div className = { `${bgColor} ${textColor} px-4 py-2 text-center text-sm` } >
-        <
-        AlertTriangle className = "inline h-4 w-4 mr-1" / >
-        <
-        span className = "font-medium" > { t('alert') } < /span> {alert.cases} {t(alert.diseaseKey)} {t('casesIn')} {alert.area} <
-        span className = "ml-2 text-xs" > •{ t(alert.preventionKey) } < /span> <
-        /div>
-    );
-};
+    return (
+  <div className={`${bgColor} ${textColor} px-4 py-2 text-center text-sm`}>
+    <AlertTriangle className="inline h-4 w-4 mr-1" />
+    <span className="font-medium">{t("alert")}</span>{" "}
+    {alert.cases} {t(alert.diseaseKey)} {t("casesIn")} {alert.area}
+    <span className="ml-2 text-xs">• {t(alert.preventionKey)}</span>
+  </div>
+);
+
 
 // Dashboard Component
 const Dashboard = () => {
@@ -751,76 +750,77 @@ const Dashboard = () => {
 
     const welcomeText = userProfile.name ? `${t('welcomeMessage')}, ${userProfile.name}!` : t('welcomeMessage') + " to " + t('appName');
 
-    return ( <
-        div className = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" >
-        <
-        div className = { `transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}` } >
-        <
-        h2 className = "text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2" > { welcomeText } <
-        /h2> <
-        p className = "text-gray-600 dark:text-gray-400" > { t('appSubtitle') } <
-        /p> <
-        /div>
+   return (
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    {/* Welcome Text */}
+    <div
+      className={`transition-all duration-700 ${
+        isLoaded ? "opacity-100" : "opacity-0"
+      }`}
+    >
+      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        {welcomeText}
+      </h2>
+      <p className="text-gray-600 dark:text-gray-400">{t("appSubtitle")}</p>
+    </div>
 
-        <
-        div className = "my-8" >
-        <
-        HealthCampBanner / >
-        <
-        /div>
+    {/* Health Camp Banner */}
+    <div className="my-8">
+      <HealthCampBanner />
+    </div>
 
-        <
-        div className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" > {
-            dashboardCards.map((card, index) => {
-                const IconComponent = card.icon;
-                const styles = colorMap[card.color];
-                return ( <
-                    div key = { card.view }
-                    onClick = {
-                        () => setCurrentView(card.view) }
-                    className = { `group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg cursor-pointer 
-                                  transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl ${styles.shadow}
-                                  ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}` }
-                    style = {
-                        { transitionDelay: `${index * 100}ms` } } >
-                    <
-                    div className = { `absolute inset-0 bg-gradient-to-br ${styles.bg} rounded-xl opacity-10 dark:opacity-20 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity duration-300` } > < /div> <
-                    div className = "p-6 relative" >
-                    <
-                    div className = { `inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${styles.bg} text-white rounded-lg mb-4 transition-transform duration-300 group-hover:scale-110 shadow-lg` } >
-                    <
-                    IconComponent className = "h-6 w-6" / >
-                    <
-                    /div> <
-                    h3 className = { `text-lg font-semibold text-gray-900 dark:text-white mb-2` } > { card.title } <
-                    /h3> <
-                    p className = "text-gray-600 dark:text-gray-400 text-sm" > { card.description } <
-                    /p> <
-                    /div> <
-                    /div>
-                );
-            })
-        } <
-        /div>
+    {/* Dashboard Cards */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {dashboardCards.map((card, index) => {
+        const IconComponent = card.icon;
+        const styles = colorMap[card.color];
+        return (
+          <div
+            key={card.view}
+            onClick={() => setCurrentView(card.view)}
+            className={`group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg cursor-pointer 
+              transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl ${styles.shadow}
+              ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+            style={{ transitionDelay: `${index * 100}ms` }}
+          >
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${styles.bg} rounded-xl opacity-10 dark:opacity-20 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity duration-300`}
+            ></div>
+            <div className="p-6 relative">
+              <div
+                className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${styles.bg} text-white rounded-lg mb-4 transition-transform duration-300 group-hover:scale-110 shadow-lg`}
+              >
+                <IconComponent className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                {card.title}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                {card.description}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
 
-        <
-        div className = "my-8" >
-        <
-        MyHealthResources / >
-        <
-        /div>
+    {/* Resources */}
+    <div className="my-8">
+      <MyHealthResources />
+    </div>
 
-        <
-        div className = { `transition-all duration-700 delay-500 mt-8 ${isLoaded ? 'opacity-100' : 'opacity-0'}` } >
-        <
-        EmergencyServices / >
-        <
-        HealthTips / >
-        <
-        /div> <
-        /div>
-    );
-};
+    {/* Emergency + Tips */}
+    <div
+      className={`transition-all duration-700 delay-500 mt-8 ${
+        isLoaded ? "opacity-100" : "opacity-0"
+      }`}
+    >
+      <EmergencyServices />
+      <HealthTips />
+    </div>
+  </div>
+);
+
 
 
 // ** NEW COMPONENTS for Dashboard **
@@ -828,108 +828,103 @@ const HealthCampBanner = () => {
     const { t } = useContext(AppContext);
     const camp = mockHealthCamps[0];
 
-    return ( <
-        div className = "relative bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow-xl p-6 overflow-hidden animate-card-pop-in"
-        style = {
-            { animationDelay: '300ms' } } >
-        <
-        div className = "absolute -bottom-4 -right-4 w-24 h-24 text-white/10" >
-        <
-        Heart size = { 96 }
-        strokeWidth = { 1.5 }
-        /> <
-        /div> <
-        div className = "relative z-10" >
-        <
-        h3 className = "font-bold text-lg flex items-center mb-1" >
-        <
-        Activity className = "mr-2" / > { t(camp.titleKey) } <
-        /h3> <
-        p className = "text-sm mb-3" > { t(camp.descriptionKey) } < /p> <
-        div className = "text-xs font-semibold bg-white/20 px-3 py-1 rounded-full inline-block" > { camp.date } & bull; { camp.location } <
-        /div> <
-        /div> <
-        /div>
-    );
-};
+    // Health Camp Card
+return (
+  <div
+    className="relative bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow-xl p-6 overflow-hidden animate-card-pop-in"
+    style={{ animationDelay: "300ms" }}
+  >
+    <div className="absolute -bottom-4 -right-4 w-24 h-24 text-white/10">
+      <Heart size={96} strokeWidth={1.5} />
+    </div>
+    <div className="relative z-10">
+      <h3 className="font-bold text-lg flex items-center mb-1">
+        <Activity className="mr-2" /> {t(camp.titleKey)}
+      </h3>
+      <p className="text-sm mb-3">{t(camp.descriptionKey)}</p>
+      <div className="text-xs font-semibold bg-white/20 px-3 py-1 rounded-full inline-block">
+        {camp.date} &bull; {camp.location}
+      </div>
+    </div>
+  </div>
+);
 
+// MyHealthResources Component
 const MyHealthResources = () => {
-    const { t, setCurrentView } = useContext(AppContext);
+  const { t, setCurrentView } = useContext(AppContext);
 
-    const resources = [
-        { titleKey: 'firstAidTitle', descKey: 'firstAidDesc', icon: LifeBuoy, view: 'firstAid' },
-        { titleKey: 'ashaDirectoryTitle', descKey: 'ashaDirectoryDesc', icon: Users, view: 'ashaWorkers' },
-    ];
+  const resources = [
+    { titleKey: "firstAidTitle", descKey: "firstAidDesc", icon: LifeBuoy, view: "firstAid" },
+    { titleKey: "ashaDirectoryTitle", descKey: "ashaDirectoryDesc", icon: Users, view: "ashaWorkers" },
+  ];
 
-    return ( <
-        div className = "bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-6" >
-        <
-        h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-4" > { t('myHealthTitle') } < /h3> <
-        div className = "grid grid-cols-1 md:grid-cols-2 gap-4" > {
-            resources.map(res => ( <
-                button key = { res.view }
-                onClick = {
-                    () => setCurrentView(res.view) }
-                className = "text-left p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center space-x-4" >
-                <
-                div className = "flex-shrink-0 w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-500 flex items-center justify-center" >
-                <
-                res.icon size = { 20 }
-                /> <
-                /div> <
-                div >
-                <
-                p className = "font-semibold text-gray-800 dark:text-gray-200" > { t(res.titleKey) } < /p> <
-                p className = "text-xs text-gray-500 dark:text-gray-400" > { t(res.descKey) } < /p> <
-                /div> <
-                /button>
-            ))
-        } <
-        /div> <
-        /div>
-    )
-}
+  return (
+    <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        {t("myHealthTitle")}
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {resources.map((res) => (
+          <button
+            key={res.view}
+            onClick={() => setCurrentView(res.view)}
+            className="text-left p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center space-x-4"
+          >
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-500 flex items-center justify-center">
+              <res.icon size={20} />
+            </div>
+            <div>
+              <p className="font-semibold text-gray-800 dark:text-gray-200">
+                {t(res.titleKey)}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t(res.descKey)}
+              </p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // Emergency Services Component
 const EmergencyServices = () => {
-    const { t } = useContext(AppContext);
-    const emergencyNumbers = [
-        { name: t('ambulance'), number: '108', color: 'bg-red-500', icon: Phone },
-        { name: t('police'), number: '112', color: 'bg-blue-500', icon: Shield },
-        { name: t('healthHelpline'), number: '104', color: 'bg-green-500', icon: Heart }
-    ];
+  const { t } = useContext(AppContext);
+  const emergencyNumbers = [
+    { name: t("ambulance"), number: "108", color: "bg-red-500", icon: Phone },
+    { name: t("police"), number: "112", color: "bg-blue-500", icon: Shield },
+    { name: t("healthHelpline"), number: "104", color: "bg-green-500", icon: Heart },
+  ];
 
-    const callEmergency = (number) => {
-        window.location.href = `tel:${number}`;
-    };
+  const callEmergency = (number) => {
+    window.location.href = `tel:${number}`;
+  };
 
-    return ( <
-        div className = "bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-6 mb-8" >
-        <
-        h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center" >
-        <
-        AlertTriangle className = "h-5 w-5 text-red-500 mr-2" / > { t('emergencyServicesTitle') } <
-        /h3> <
-        div className = "grid grid-cols-1 sm:grid-cols-3 gap-4" > {
-            emergencyNumbers.map((service, index) => {
-                const IconComponent = service.icon;
-                return ( <
-                    button key = { index }
-                    onClick = {
-                        () => callEmergency(service.number) }
-                    className = { `${service.color} hover:shadow-lg hover:${service.color}/50 text-white rounded-lg p-4 flex items-center justify-center space-x-2 transition-all duration-200 font-semibold transform hover:scale-105` } >
-                    <
-                    IconComponent className = "h-5 w-5" / >
-                    <
-                    span > { service.name } < /span> <
-                    span className = "font-bold" > { service.number } < /span> <
-                    /button>
-                );
-            })
-        } <
-        /div> <
-        /div>
-    );
+  return (
+    <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-6 mb-8">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+        <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
+        {t("emergencyServicesTitle")}
+      </h3>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {emergencyNumbers.map((service, index) => {
+          const IconComponent = service.icon;
+          return (
+            <button
+              key={index}
+              onClick={() => callEmergency(service.number)}
+              className={`${service.color} hover:shadow-lg hover:${service.color}/50 text-white rounded-lg p-4 flex items-center justify-center space-x-2 transition-all duration-200 font-semibold transform hover:scale-105`}
+            >
+              <IconComponent className="h-5 w-5" />
+              <span>{service.name}</span>
+              <span className="font-bold">{service.number}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 // Health Tips Component
@@ -956,68 +951,76 @@ const HealthTips = () => {
         User's Chronic Conditions: ${userProfile.conditions || 'None specified'}
         Generate 3 simple, actionable, and encouraging health tips tailored to this user. The tips should be easy to follow with limited resources. Focus on diet, light exercise, or lifestyle adjustments. The language must be extremely simple. Output only the tips in a numbered list, like "1. First tip.\n2. Second tip.\n3. Third tip.".`;
 
-        const apiKey = "";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+        const apiKey = "YOUR_GEMINI_API_KEY_HEREAIzaSyAFQzp0kxWTPRh7JNQkO6Ac2AmI2tnTp9g"; // 👈 Paste your actual key here
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
         const payload = { contents: [{ parts: [{ text: systemPrompt }] }] };
 
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const result = await response.json();
-            const candidate = result.candidates ? .[0];
+      try {
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-            if (candidate && candidate.content ? .parts ? .[0] ? .text) {
-                const generatedText = candidate.content.parts[0].text;
-                const formattedTips = generatedText.split('\n').map(tip => tip.replace(/^\d+\.\s*/, ''));
-                setTips(formattedTips);
-                setIsPersonalized(true);
-            } else {
-                console.error("Gemini API Error: No content in response", result);
-                setError("Sorry, could not generate personalized tips right now.");
-            }
-        } catch (error) {
-            console.error("Error fetching personalized tips:", error);
-            setError("There was a network problem. Please check your connection and try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const result = await response.json();
+  const candidate = result?.candidates?.[0];
+  const text = candidate?.content?.parts?.[0]?.text;
 
-    return ( <
-        div className = "bg-green-100/50 dark:bg-green-900/50 backdrop-blur-md rounded-xl p-6" >
-        <
-        div className = "flex justify-between items-start mb-4" >
-        <
-        div >
-        <
-        h3 className = "text-lg font-semibold text-green-800 dark:text-green-200 flex items-center" >
-        <
-        BookHeart className = "h-5 w-5 mr-2" / > { isPersonalized ? t('personalizedTipsTitle') : t('dailyHealthTipsTitle') } <
-        /h3> <
-        /div> <
-        button onClick = { getPersonalizedTips }
-        disabled = { isLoading }
-        className = "flex-shrink-0 flex items-center text-xs font-semibold bg-white/50 text-green-700 dark:bg-black/20 dark:text-green-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors disabled:opacity-50" >
-        { isLoading ? < Loader2 className = "h-4 w-4 animate-spin mr-2" / > : < Sparkles className = "h-4 w-4 text-yellow-500 mr-2" / > } { t('getPersonalizedTips') } <
-        /button> <
-        /div> <
-        div className = "grid grid-cols-1 sm:grid-cols-2 gap-3" > {
-            tips.map((tip, index) => ( <
-                div key = { index }
-                className = "flex items-start" >
-                <
-                div className = "w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0" > < /div> <
-                p className = "text-green-700 dark:text-green-300 text-sm" > { tip } < /p> <
-                /div>
-            ))
-        } <
-        /div> <
-        /div>
-    );
-};
+  if (text) {
+    const formattedTips = text
+      .split("\n")
+      .map((tip) => tip.replace(/^\d+\.\s*/, "").trim())
+      .filter(Boolean);
+
+    setTips(formattedTips);
+    setIsPersonalized(true);
+  } else {
+    console.error("Gemini API Error: No content in response", result);
+    setError("Sorry, could not generate personalized tips right now.");
+  }
+} catch (error) {
+  console.error("Error fetching personalized tips:", error);
+  setError(
+    "There was a network problem. Please check your connection and try again."
+  );
+} finally {
+  setIsLoading(false);
+}
+
+    return (
+  <div className="bg-green-100/50 dark:bg-green-900/50 backdrop-blur-md rounded-xl p-6">
+    <div className="flex justify-between items-start mb-4">
+      <div>
+        <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 flex items-center">
+          <BookHeart className="h-5 w-5 mr-2" />
+          {isPersonalized ? t('personalizedTipsTitle') : t('dailyHealthTipsTitle')}
+        </h3>
+      </div>
+      <button
+        onClick={getPersonalizedTips}
+        disabled={isLoading}
+        className="flex-shrink-0 flex items-center text-xs font-semibold bg-white/50 text-green-700 dark:bg-black/20 dark:text-green-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors disabled:opacity-50"
+      >
+        {isLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+        ) : (
+          <Sparkles className="h-4 w-4 text-yellow-500 mr-2" />
+        )}
+        {t('getPersonalizedTips')}
+      </button>
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {tips.map((tip, index) => (
+        <div key={index} className="flex items-start">
+          <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+          <p className="text-green-700 dark:text-green-300 text-sm">{tip}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 
 // Chatbot Component
 const Chatbot = () => {
@@ -1055,51 +1058,59 @@ const Chatbot = () => {
         }
     }, [messages, setError]);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current ? .scrollIntoView({ behavior: 'smooth' });
-    };
+   const scrollToBottom = () => {
+  messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+};
+
 
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
-    const getGeminiResponse = async(userMessage) => {
-        const apiKey = "";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    const 
+    const API_BASE = "https://alcohol-loan-layers-objects.trycloudflare.com";
 
-        const systemPrompt = `You are SehatMitra, a friendly, empathetic, and knowledgeable health assistant designed for users in rural India, specifically the Patiala region of Punjab. Your personality is warm, caring, and reassuring.
-        Your primary language for responses should match the user's query language, which is currently ${language}.
-        **CRITICAL SAFETY INSTRUCTION:** You are an AI assistant, NOT a medical professional. You MUST NOT provide medical diagnoses, prescribe medication, or give definitive medical advice. Your goal is to provide general health information, preventive care tips, and empathetic support.
-        For any query that seems serious (e.g., mentions severe pain, chest pain, breathing difficulty, serious injury, or asks for a diagnosis), you MUST strongly and clearly advise the user to consult a qualified doctor or visit a nearby hospital immediately. You can remind them that they can find hospitals in the 'Hospitals' section of the app.
-        Keep your answers concise, easy to understand, and broken down into simple steps or bullet points if possible. Your tone should always be comforting and supportive.`;
-
-        const payload = {
-            contents: [{ parts: [{ text: userMessage }] }],
-            systemInstruction: { parts: [{ text: systemPrompt }] }
-        };
-
+    const getBackendResponse = async (userMessage) => {
         try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+            const response = await fetch(`${API_BASE}/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: userMessage }),
             });
-            const result = await response.json();
-            const candidate = result.candidates ? .[0];
-
-            if (candidate && candidate.content ? .parts ? .[0] ? .text) {
-                return candidate.content.parts[0].text;
-            } else {
-                console.error("Gemini API Error:", result);
-                setError(t('defaultResponse'));
-                return t('defaultResponse');
+            if (!response.ok) {
+                throw new Error("Backend error: " + response.statusText);
             }
+            const data = await response.json();
+            return data.reply || t('defaultResponse');
         } catch (error) {
-            console.error("Error calling Gemini API:", error);
+            console.error("Error calling backend:", error);
             setError("There was a network problem. Please check your connection.");
             return t('defaultResponse');
         }
     };
+
+        };
+try {
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    const candidate = result.candidates?.[0];
+
+    if (candidate && candidate.content?.parts?.[0]?.text) {
+        return candidate.content.parts[0].text;
+    } else {
+        console.error("Gemini API Error:", result);
+        setError(t('defaultResponse'));
+        return t('defaultResponse');
+    }
+} catch (error) {
+    console.error("Error calling Gemini API:", error);
+    setError("There was a network problem. Please check your connection.");
+    return t('defaultResponse');
+}
 
     const sendMessage = async() => {
         if (!inputMessage.trim()) return;
@@ -1110,7 +1121,7 @@ const Chatbot = () => {
         setInputMessage('');
         setIsLoading(true);
 
-        const botResponseContent = await getGeminiResponse(currentInput);
+        const botResponseContent = await getBackendResponse(currentInput);
 
         const botResponse = { type: 'bot', content: botResponseContent, timestamp: new Date().toISOString() };
         setMessages(prev => [...prev, botResponse]);
@@ -1138,148 +1149,167 @@ const Chatbot = () => {
     const speakMessage = (content) => { playSound(content, language) };
     const handleKeyPress = (e) => { if (e.key === 'Enter' && !isLoading) sendMessage(); };
 
-    return ( <
-        div className = "max-w-4xl mx-auto px-4 py-6 h-[calc(100vh-120px)] flex flex-col animate-fade-in" >
-        <
-        div className = "bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-4 mb-4" >
-        <
-        div className = "flex items-center justify-between" >
-        <
-        div className = "flex items-center" >
-        <
-        MessageCircle className = "h-8 w-8 text-blue-500 mr-3" / >
-        <
-        div >
-        <
-        h2 className = "text-xl font-semibold text-gray-900 dark:text-white" > { t('chatbotHeaderTitle') } < /h2> <
-        p className = "text-sm text-gray-500 dark:text-gray-400" > { t('chatbotHeaderSubtitle') } < /p> <
-        /div> <
-        /div> <
-        div className = "flex items-center space-x-2" >
-        <
-        button onClick = {
-            () => setShowClearConfirm(true) }
-        className = "p-2 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        title = { t('clearChat') } >
-        <
-        Trash2 className = "h-5 w-5" / >
-        <
-        /button> <
-        div className = "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs font-medium" > { t('online') } <
-        /div> <
-        /div> <
-        /div> <
-        /div>
+    return (
+  <div className="max-w-4xl mx-auto px-4 py-6 h-[calc(100vh-120px)] flex flex-col animate-fade-in">
+    {/* Header */}
+    <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-4 mb-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <MessageCircle className="h-8 w-8 text-blue-500 mr-3" />
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              {t('chatbotHeaderTitle')}
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {t('chatbotHeaderSubtitle')}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowClearConfirm(true)}
+            className="p-2 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            title={t('clearChat')}
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+          <div className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs font-medium">
+            {t('online')}
+          </div>
+        </div>
+      </div>
+    </div>
 
-        { /* Confirmation Modal */ } {
-            showClearConfirm && ( <
-                div className = "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in" >
-                <
-                div className = "bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 m-4 max-w-sm w-full" >
-                <
-                h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-2" > { t('clearChat') } < /h3> <
-                p className = "text-sm text-gray-600 dark:text-gray-400 mb-4" > { t('clearChatConfirm') } < /p> <
-                div className = "flex justify-end space-x-2" >
-                <
-                button onClick = {
-                    () => setShowClearConfirm(false) }
-                className = "px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 dark:bg-gray-600 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-500" > { t('cancel') } <
-                /button> <
-                button onClick = { handleClearChat }
-                className = "px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600" > { t('clear') } <
-                /button> <
-                /div> <
-                /div> <
-                /div>
-            )
-        }
+    {/* Confirmation Modal */}
+    {showClearConfirm && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 m-4 max-w-sm w-full">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            {t('clearChat')}
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            {t('clearChatConfirm')}
+          </p>
+          <div className="flex justify-end space-x-2">
+            <button
+              onClick={() => setShowClearConfirm(false)}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 dark:bg-gray-600 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-500"
+            >
+              {t('cancel')}
+            </button>
+            <button
+              onClick={handleClearChat}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600"
+            >
+              {t('clear')}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
 
-        <
-        div className = "flex-1 bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg overflow-hidden flex flex-col" >
-        <
-        div className = "flex-1 overflow-y-auto p-4 space-y-4" > {
-            messages.map((message, index) => ( <
-                div key = { index }
-                className = { `flex items-end ${message.type === 'user' ? 'justify-end animate-slide-in-right' : 'justify-start animate-slide-in-left'}` } >
-                <
-                div className = { `max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${message.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'}` } >
-                <
-                p className = "text-sm"
-                dangerouslySetInnerHTML = {
-                    { __html: message.content.replace(/\n/g, '<br />') } } > < /p> {
-                    message.type === 'bot' && ( <
-                        button onClick = {
-                            () => speakMessage(message.content) }
-                        className = "mt-2 text-xs text-blue-500 dark:text-blue-400 hover:underline flex items-center" >
-                        <
-                        Volume2 className = "h-3 w-3 mr-1" / > { t('listen') } <
-                        /button>
-                    )
-                } <
-                div className = "text-xs opacity-70 mt-1 text-right" > { new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } < /div> <
-                /div> <
-                /div>
-            ))
-        } {
-            isLoading && ( <
-                div className = "flex justify-start animate-slide-in-left" >
-                <
-                div className = "bg-gray-100 dark:bg-gray-700 rounded-lg p-3 max-w-xs shadow-sm" >
-                <
-                div className = "flex items-center space-x-2" >
-                <
-                div className = "dot dot-1 bg-gray-400" > < /div> <
-                div className = "dot dot-2 bg-gray-400" > < /div> <
-                div className = "dot dot-3 bg-gray-400" > < /div> <
-                /div> <
-                /div> <
-                /div>
-            )
-        } <
-        div ref = { messagesEndRef }
-        /> <
-        /div> { /* IMPROVEMENT: Added disclaimer visible in the UI */ } <
-        div className = "px-4 pb-2 text-xs text-gray-500 dark:text-gray-400 text-center"
-        dangerouslySetInnerHTML = {
-            { __html: t('chatbotDisclaimer') } } >
-        <
-        /div> { /* Input Area */ } <
-        div className = "border-t border-gray-200 dark:border-gray-600 p-4" >
-        <
-        div className = "flex items-center space-x-2" >
-        <
-        div className = "flex-1 relative" >
-        <
-        input type = "text"
-        value = { inputMessage }
-        onChange = {
-            (e) => setInputMessage(e.target.value) }
-        onKeyPress = { handleKeyPress }
-        placeholder = { t('chatbotInputPlaceholder') }
-        className = "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white" /
-        >
-        <
-        /div> <
-        button onClick = { startVoiceInput }
-        disabled = { isListening }
-        className = { `p-2 rounded-lg ${isListening ? 'bg-red-500 animate-pulse' : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'} text-gray-700 dark:text-gray-300` } >
-        <
-        Mic className = "h-5 w-5" / >
-        <
-        /button> <
-        button onClick = { sendMessage }
-        disabled = {!inputMessage.trim() || isLoading }
-        className = "p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed" >
-        <
-        Send className = "h-5 w-5" / >
-        <
-        /button> <
-        /div> <
-        /div> <
-        /div> <
-        /div>
-    );
-};
+    {/* Chat Window */}
+    <div className="flex-1 bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg overflow-hidden flex flex-col">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`flex items-end ${
+              message.type === 'user'
+                ? 'justify-end animate-slide-in-right'
+                : 'justify-start animate-slide-in-left'
+            }`}
+          >
+            <div
+              className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${
+                message.type === 'user'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+              }`}
+            >
+              <p
+                className="text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: message.content.replace(/\n/g, '<br />'),
+                }}
+              />
+              {message.type === 'bot' && (
+                <button
+                  onClick={() => speakMessage(message.content)}
+                  className="mt-2 text-xs text-blue-500 dark:text-blue-400 hover:underline flex items-center"
+                >
+                  <Volume2 className="h-3 w-3 mr-1" />
+                  {t('listen')}
+                </button>
+              )}
+              <div className="text-xs opacity-70 mt-1 text-right">
+                {new Date(message.timestamp).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Loading Animation */}
+        {isLoading && (
+          <div className="flex justify-start animate-slide-in-left">
+            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 max-w-xs shadow-sm">
+              <div className="flex items-center space-x-2">
+                <div className="dot dot-1 bg-gray-400"></div>
+                <div className="dot dot-2 bg-gray-400"></div>
+                <div className="dot dot-3 bg-gray-400"></div>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Disclaimer */}
+      <div
+        className="px-4 pb-2 text-xs text-gray-500 dark:text-gray-400 text-center"
+        dangerouslySetInnerHTML={{ __html: t('chatbotDisclaimer') }}
+      />
+
+      {/* Input Area */}
+      <div className="border-t border-gray-200 dark:border-gray-600 p-4">
+        <div className="flex items-center space-x-2">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={t('chatbotInputPlaceholder')}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+          <button
+            onClick={startVoiceInput}
+            disabled={isListening}
+            className={`p-2 rounded-lg ${
+              isListening
+                ? 'bg-red-500 animate-pulse'
+                : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
+            } text-gray-700 dark:text-gray-300`}
+          >
+            <Mic className="h-5 w-5" />
+          </button>
+          <button
+            onClick={sendMessage}
+            disabled={!inputMessage.trim() || isLoading}
+            className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Send className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 
 // Hospitals Component
 const Hospitals = () => {
@@ -1294,259 +1324,276 @@ const Hospitals = () => {
             }, 1500);
         }, []);
 
-        const LoadingCard = () => ( <
-            div className = "hospital-card p-6 shimmer-bg rounded-xl" >
-            <
-            div className = "h-6 w-3/4 bg-white/20 rounded-md mb-3" > < /div> <
-            div className = "h-4 w-1/2 bg-white/20 rounded-md mb-4" > < /div> <
-            div className = "h-4 w-1/3 bg-white/20 rounded-md" > < /div> <
-            div className = "border-t border-white/10 my-4" > < /div> <
-            div className = "h-5 w-1/4 bg-white/20 rounded-md mb-3" > < /div> <
-            div className = "grid grid-cols-1 sm:grid-cols-2 gap-3" >
-            <
-            div className = "h-12 bg-white/20 rounded-lg" > < /div> <
-            div className = "h-12 bg-white/20 rounded-lg" > < /div> <
-            /div> <
-            /div>
-        );
+       const LoadingCard = () => (
+  <div className="hospital-card p-6 shimmer-bg rounded-xl">
+    <div className="h-6 w-3/4 bg-white/20 rounded-md mb-3"></div>
+    <div className="h-4 w-1/2 bg-white/20 rounded-md mb-4"></div>
+    <div className="h-4 w-1/3 bg-white/20 rounded-md"></div>
+    <div className="border-t border-white/10 my-4"></div>
+    <div className="h-5 w-1/4 bg-white/20 rounded-md mb-3"></div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="h-12 bg-white/20 rounded-lg"></div>
+      <div className="h-12 bg-white/20 rounded-lg"></div>
+    </div>
+  </div>
+);
 
-        const DoctorChip = ({ doctor }) => ( <
-            div className = "group flex items-center space-x-3 p-3 bg-white/10 dark:bg-black/20 rounded-lg transition-colors hover:bg-white/20 dark:hover:bg-black/30" >
-            <
-            div className = { `flex-shrink-0 w-3 h-3 rounded-full transition-all duration-300 ${doctor.available ? 'bg-green-400 group-hover:shadow-lg group-hover:shadow-green-400/50' : 'bg-red-500'}` } > < /div> <
-            div className = "flex-1" >
-            <
-            p className = "font-medium text-sm text-gray-900 dark:text-white" > { t(doctor.nameKey) } < /p> <
-            p className = "text-xs text-gray-600 dark:text-gray-400" > { t(doctor.specialtyKey) } < /p> <
-            /div> <
-            Stethoscope className = "h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform group-hover:scale-110" / >
-            <
-            /div>
-        );
 
-        const HospitalCard = ({ hospital, index }) => {
-                const cardRef = useRef(null);
+        const DoctorChip = ({ doctor }) => (
+  <div className="group flex items-center space-x-3 p-3 bg-white/10 dark:bg-black/20 rounded-lg transition-colors hover:bg-white/20 dark:hover:bg-black/30">
+    <div
+      className={`flex-shrink-0 w-3 h-3 rounded-full transition-all duration-300 ${
+        doctor.available
+          ? 'bg-green-400 group-hover:shadow-lg group-hover:shadow-green-400/50'
+          : 'bg-red-500'
+      }`}
+    ></div>
+    <div className="flex-1">
+      <p className="font-medium text-sm text-gray-900 dark:text-white">
+        {t(doctor.nameKey)}
+      </p>
+      <p className="text-xs text-gray-600 dark:text-gray-400">
+        {t(doctor.specialtyKey)}
+      </p>
+    </div>
+    <Stethoscope className="h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform group-hover:scale-110" />
+  </div>
+);
 
-                const handleMouseMove = (e) => {
-                    const card = cardRef.current;
-                    if (!card) return;
-                    const rect = card.getBoundingClientRect();
-                    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-                    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-                };
+const HospitalCard = ({ hospital, index }) => {
+  const cardRef = useRef(null);
 
-                return ( <
-                    div key = { hospital.id }
-                    ref = { cardRef }
-                    onMouseMove = { handleMouseMove }
-                    className = "hospital-card animate-card-pop-in"
-                    style = {
-                        { animationDelay: `${index * 150}ms` } } >
-                    <
-                    div className = "p-6" >
-                    <
-                    div className = "flex justify-between items-start mb-4" >
-                    <
-                    div className = "flex-1" >
-                    <
-                    h3 className = "text-xl font-semibold text-gray-900 dark:text-white mb-2" > { t(hospital.nameKey) } < /h3> <
-                    div className = "flex items-center text-gray-600 dark:text-gray-400 mb-2" >
-                    <
-                    MapPin className = "h-4 w-4 mr-2 flex-shrink-0" / > < span > { hospital.address } < /span> <
-                    /div> <
-                    div className = "flex items-center text-gray-600 dark:text-gray-400" >
-                    <
-                    Clock className = "h-4 w-4 mr-2 flex-shrink-0" / > < span > { hospital.distance } { t('distanceAway') } < /span> <
-                    /div> <
-                    /div> <
-                    div className = { `flex-shrink-0 ml-4 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${hospital.isOpen ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}` } > { hospital.isOpen ? t('open') : t('closed') } <
-                    /div> <
-                    /div> <
-                    div className = "border-t border-white/10 my-4" > < /div> <
-                    div >
-                    <
-                    h4 className = "font-medium text-gray-900 dark:text-white mb-3" > { t('availableDoctors') } < /h4> <
-                    div className = "grid grid-cols-1 sm:grid-cols-2 gap-3" > {
-                        hospital.doctors.map((doctor, docIndex) => < DoctorChip key = { docIndex }
-                            doctor = { doctor }
-                            />)} <
-                            /div> <
-                            /div> <
-                            div className = "flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mt-6" >
-                            <
-                            button onClick = {
-                                () => window.location.href = `tel:${hospital.phone}` }
-                            className = "group flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2.5 rounded-lg hover:shadow-lg hover:shadow-blue-500/50 flex items-center justify-center transition-all duration-300 transform active:scale-95" >
-                            <
-                            Phone className = "h-4 w-4 mr-2 transition-transform group-hover:rotate-12" / > { t('callHospital') } <
-                            /button> <
-                            button className = "group flex-1 bg-transparent text-gray-800 dark:text-gray-200 px-4 py-2.5 rounded-lg flex items-center justify-center transition-all duration-300 transform active:scale-95 relative border border-purple-400 hover:text-white overflow-hidden" >
-                            <
-                            span className = "absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-600 transition-all duration-300 ease-in-out transform scale-x-0 group-hover:scale-x-100 origin-left" > < /span> <
-                            span className = "relative flex items-center" >
-                            <
-                            MapPin className = "h-4 w-4 mr-2 transition-transform group-hover:animate-[icon-bounce_0.5s_ease-in-out]" / > { t('getDirections') } <
-                            /span> <
-                            /button> <
-                            /div> <
-                            /div> <
-                            /div>
-                        )
-                    }
+  const handleMouseMove = (e) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+  };
 
-                    return ( <
-                        div className = "max-w-7xl mx-auto px-4 py-6" >
-                        <
-                        div className = "flex items-center justify-between mb-6" >
-                        <
-                        h2 className = "text-2xl font-bold text-gray-900 dark:text-white" > { t('hospitalsTitle') } < /h2> <
-                        div className = "flex items-center text-sm text-gray-500 dark:text-gray-400" > < MapPin className = "h-4 w-4 mr-1" / > < span > { t('locationInfo') } < /span></div >
-                        <
-                        /div> {
-                            loading ? ( <
-                                div className = "grid md:grid-cols-1 lg:grid-cols-2 gap-8" >
-                                <
-                                LoadingCard / >
-                                <
-                                LoadingCard / >
-                                <
-                                /div>
-                            ) : ( <
-                                div className = "grid md:grid-cols-1 lg:grid-cols-2 gap-8" > {
-                                    hospitals.map((hospital, index) => ( <
-                                        HospitalCard hospital = { hospital }
-                                        index = { index }
-                                        key = { hospital.id }
-                                        />
-                                    ))
-                                } <
-                                /div>
-                            )
-                        } <
-                        /div>
-                    );
-                };
+  // (rest of your code here…)
+
+
+                return (
+  <div
+    key={hospital.id}
+    ref={cardRef}
+    onMouseMove={handleMouseMove}
+    className="hospital-card animate-card-pop-in"
+    style={{ animationDelay: `${index * 150}ms` }}
+  >
+    <div className="p-6">
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex-1">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            {t(hospital.nameKey)}
+          </h3>
+          <div className="flex items-center text-gray-600 dark:text-gray-400 mb-2">
+            <MapPin className="h-4 w-4 mr-2 flex-shrink-0" /> 
+            <span>{hospital.address}</span>
+          </div>
+          <div className="flex items-center text-gray-600 dark:text-gray-400">
+            <Clock className="h-4 w-4 mr-2 flex-shrink-0" /> 
+            <span>{hospital.distance} {t('distanceAway')}</span>
+          </div>
+        </div>
+        <div
+          className={`flex-shrink-0 ml-4 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+            hospital.isOpen
+              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+          }`}
+        >
+          {hospital.isOpen ? t('open') : t('closed')}+
+        </div>
+      </div>
+
+      <div className="border-t border-white/10 my-4"></div>
+
+      <div>
+        <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+          {t('availableDoctors')}
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {hospital.doctors.map((doctor, docIndex) => (
+            <DoctorChip key={docIndex} doctor={doctor} />
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mt-6">
+        <button
+          onClick={() => (window.location.href = `tel:${hospital.phone}`)}
+          className="group flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2.5 rounded-lg hover:shadow-lg hover:shadow-blue-500/50 flex items-center justify-center transition-all duration-300 transform active:scale-95"
+        >
+          <Phone className="h-4 w-4 mr-2 transition-transform group-hover:rotate-12" /> 
+          {t('callHospital')}
+        </button>
+
+        <button className="group flex-1 bg-transparent text-gray-800 dark:text-gray-200 px-4 py-2.5 rounded-lg flex items-center justify-center transition-all duration-300 transform active:scale-95 relative border border-purple-400 hover:text-white overflow-hidden">
+          <span className="absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-600 transition-all duration-300 ease-in-out transform scale-x-0 group-hover:scale-x-100 origin-left"></span>
+          <span className="relative flex items-center">
+            <MapPin className="h-4 w-4 mr-2 transition-transform group-hover:animate-[icon-bounce_0.5s_ease-in-out]" /> 
+            {t('getDirections')}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+);
+};
+
+
+                    return (
+  <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="flex items-center justify-between mb-6">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        {t('hospitalsTitle')}
+      </h2>
+      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+        <MapPin className="h-4 w-4 mr-1" /> 
+        <span>{t('locationInfo')}</span>
+      </div>
+    </div>
+
+    {loading ? (
+      <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+        <LoadingCard />
+        <LoadingCard />
+      </div>
+    ) : (
+      <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+        {hospitals.map((hospital, index) => (
+          <HospitalCard hospital={hospital} index={index} key={hospital.id} />
+        ))}
+      </div>
+    )}
+  </div>
+);
+};
+
 
                 // **ALERTS COMPONENT - REVAMPED**
                 const Alerts = () => {
                     const { t } = useContext(AppContext);
 
                     const AlertCard = ({ outbreak, index }) => {
-                        const isHigh = outbreak.severity === 'high';
-                        const severityColor = isHigh ? 'red' : 'yellow';
+  const isHigh = outbreak.severity === 'high';
+  const severityColor = isHigh ? 'red' : 'yellow';
 
-                        return ( <
-                            div className = "alert-card shadow-lg animate-card-pop-in"
-                            style = {
-                                { animationDelay: `${index * 150}ms` } } >
-                            <
-                            div className = { `severity-glow bg-${severityColor}-500` } > < /div> <
-                            div className = "pl-6 p-4 flex items-start space-x-4" >
-                            <
-                            div className = { `flex-shrink-0 w-12 h-12 rounded-full bg-${severityColor}-100 dark:bg-${severityColor}-500/20 flex items-center justify-center` } >
-                            <
-                            AlertTriangle className = { `h-6 w-6 text-${severityColor}-500 animated-icon` }
-                            /> <
-                            /div> <
-                            div className = "flex-1" >
-                            <
-                            div className = "flex justify-between items-start" >
-                            <
-                            div >
-                            <
-                            h3 className = "text-lg font-semibold text-gray-900 dark:text-white" > { t(outbreak.diseaseKey) } { t('outbreakAlertSuffix') } <
-                            /h3> <
-                            p className = "text-sm text-gray-600 dark:text-gray-400 font-medium" > { outbreak.cases } { t('confirmedCasesIn') } { outbreak.area } <
-                            /p> <
-                            /div> <
-                            span className = { `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-${severityColor}-100 text-${severityColor}-800 dark:bg-${severityColor}-900 dark:text-${severityColor}-200` } > { isHigh ? t('severityHigh') : t('severityMedium') } <
-                            /span> <
-                            /div>
+  return (
+    <div
+      className="alert-card shadow-lg animate-card-pop-in"
+      style={{ animationDelay: `${index * 150}ms` }}
+    >
+      <div className={`severity-glow bg-${severityColor}-500`}></div>
 
-                            <
-                            div className = "mt-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg" >
-                            <
-                            h4 className = "font-medium text-sm text-gray-800 dark:text-gray-200 mb-1" > { t('preventionMeasures') } < /h4> <
-                            p className = "text-sm text-gray-600 dark:text-gray-400" > { t(outbreak.preventionKey) } < /p> <
-                            /div>
+      <div className="pl-6 p-4 flex items-start space-x-4">
+        <div
+          className={`flex-shrink-0 w-12 h-12 rounded-full bg-${severityColor}-100 dark:bg-${severityColor}-500/20 flex items-center justify-center`}
+        >
+          <AlertTriangle className={`h-6 w-6 text-${severityColor}-500 animated-icon`} />
+        </div>
 
-                            <
-                            div className = "flex space-x-3 mt-4" >
-                            <
-                            button className = "group flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline" > { t('learnMore') } <
-                            /button> <
-                            button className = "group flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors" >
-                            <
-                            Share2 className = "h-4 w-4 mr-1.5 transition-transform group-hover:scale-110" / > { t('shareAlert') } <
-                            /button> <
-                            /div> <
-                            /div> <
-                            /div> <
-                            /div>
-                        );
-                    }
+        <div className="flex-1">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {t(outbreak.diseaseKey)} {t('outbreakAlertSuffix')}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                {outbreak.cases} {t('confirmedCasesIn')} {outbreak.area}
+              </p>
+            </div>
 
-                    const VaccineCard = ({ titleKey, descKey, color, icon: Icon, index }) => ( <
-                        div className = "relative p-5 rounded-xl overflow-hidden animate-card-pop-in bg-white/70 dark:bg-gray-800/70 backdrop-blur-md shadow-lg"
-                        style = {
-                            { animationDelay: `${(mockOutbreaks.length + index) * 150}ms` } } >
-                        <
-                        div className = { `absolute inset-0 bg-gradient-to-br from-${color}-400 to-${color}-600 opacity-10 dark:opacity-20` } > < /div> <
-                        div className = "flex items-center relative" >
-                        <
-                        div className = { `flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-${color}-400 to-${color}-600 text-white flex items-center justify-center shadow-lg` } >
-                        <
-                        Icon className = "h-6 w-6" / >
-                        <
-                        /div> <
-                        div className = "ml-4" >
-                        <
-                        h4 className = "font-semibold text-gray-900 dark:text-white" > { t(titleKey) } < /h4> <
-                        p className = "text-sm text-gray-600 dark:text-gray-400" > { t(descKey) } < /p> <
-                        /div> <
-                        /div> <
-                        /div>
-                    );
+            <span
+              className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-${severityColor}-100 text-${severityColor}-800 dark:bg-${severityColor}-900 dark:text-${severityColor}-200`}
+            >
+              {isHigh ? t('severityHigh') : t('severityMedium')}
+            </span>
+          </div>
 
-                    return ( <
-                        div className = "max-w-7xl mx-auto px-4 py-6" >
-                        <
-                        h2 className = "text-2xl font-bold text-gray-900 dark:text-white mb-6" > { t('alertsTitle') } < /h2>
+          <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <h4 className="font-medium text-sm text-gray-800 dark:text-gray-200 mb-1">
+              {t('preventionMeasures')}
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {t(outbreak.preventionKey)}
+            </p>
+          </div>
 
-                        <
-                        div className = "space-y-6" > {
-                            mockOutbreaks.map((outbreak, index) => ( <
-                                AlertCard key = { outbreak.id }
-                                outbreak = { outbreak }
-                                index = { index }
-                                />
-                            ))
-                        } <
-                        /div>
+          <div className="flex space-x-3 mt-4">
+            <button className="group flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
+              {t('learnMore')}
+            </button>
+            <button className="group flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors">
+              <Share2 className="h-4 w-4 mr-1.5 transition-transform group-hover:scale-110" /> {t('shareAlert')}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-                        <
-                        div className = "mt-10" >
-                        <
-                        h3 className = "text-xl font-semibold text-gray-900 dark:text-white mb-4" > { t('vaccinationRemindersTitle') } < /h3> <
-                        div className = "space-y-4" >
-                        <
-                        VaccineCard titleKey = "covidBoosterTitle"
-                        descKey = "covidBoosterDesc"
-                        color = "green"
-                        icon = { Shield }
-                        index = { 0 }
-                        /> <
-                        VaccineCard titleKey = "fluShotTitle"
-                        descKey = "fluShotDesc"
-                        color = "blue"
-                        icon = { Shield }
-                        index = { 1 }
-                        /> <
-                        /div> <
-                        /div> <
-                        /div>
-                    );
-                };
+
+                   const VaccineCard = ({ titleKey, descKey, color, icon: Icon, index }) => (
+  <div
+    className="relative p-5 rounded-xl overflow-hidden animate-card-pop-in bg-white/70 dark:bg-gray-800/70 backdrop-blur-md shadow-lg"
+    style={{ animationDelay: `${(mockOutbreaks.length + index) * 150}ms` }}
+  >
+    <div
+      className={`absolute inset-0 bg-gradient-to-br from-${color}-400 to-${color}-600 opacity-10 dark:opacity-20`}
+    ></div>
+
+    <div className="flex items-center relative">
+      <div
+        className={`flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-${color}-400 to-${color}-600 text-white flex items-center justify-center shadow-lg`}
+      >
+        <Icon className="h-6 w-6" />
+      </div>
+      <div className="ml-4">
+        <h4 className="font-semibold text-gray-900 dark:text-white">{t(titleKey)}</h4>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{t(descKey)}</p>
+      </div>
+    </div>
+  </div>
+);
+
+return (
+  <div className="max-w-7xl mx-auto px-4 py-6">
+    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('alertsTitle')}</h2>
+
+    <div className="space-y-6">
+      {mockOutbreaks.map((outbreak, index) => (
+        <AlertCard key={outbreak.id} outbreak={outbreak} index={index} />
+      ))}
+    </div>
+
+    <div className="mt-10">
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        {t('vaccinationRemindersTitle')}
+      </h3>
+      <div className="space-y-4">
+        <VaccineCard
+          titleKey="covidBoosterTitle"
+          descKey="covidBoosterDesc"
+          color="green"
+          icon={Shield}
+          index={0}
+        />
+        <VaccineCard
+          titleKey="fluShotTitle"
+          descKey="fluShotDesc"
+          color="blue"
+          icon={Shield}
+          index={1}
+        />
+      </div>
+    </div>
+  </div>
+);
+
 
                 // Profile Component
                 const Profile = () => {
@@ -1571,324 +1618,270 @@ const Hospitals = () => {
                             setTimeout(() => setShowSuccess(false), 3000);
                         };
 
-                        const ProfileInfoRow = ({ label, value, placeholder }) => ( <
-                            div >
-                            <
-                            dt className = "text-sm font-medium text-gray-500 dark:text-gray-400" > { label } < /dt> <
-                            dd className = "mt-1 text-sm text-gray-900 dark:text-white" > {
-                                value || < span className = "text-gray-400 dark:text-gray-500" > { placeholder } < /span>} <
-                                /dd> <
-                                /div>
-                            );
+                        const ProfileInfoRow = ({ label, value, placeholder }) => (
+  <div>
+    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</dt>
+    <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+      {value || <span className="text-gray-400 dark:text-gray-500">{placeholder}</span>}
+    </dd>
+  </div>
+);
 
-                            const EditInfoRow = ({ label, name, value, placeholder }) => ( <
-                                div >
-                                <
-                                label htmlFor = { name }
-                                className = "block text-sm font-medium text-gray-700 dark:text-gray-300" > { label } < /label> <
-                                input type = "text"
-                                id = { name }
-                                name = { name }
-                                value = { value }
-                                onChange = { handleInputChange }
-                                placeholder = { placeholder }
-                                className = "mt-1 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white" /
-                                >
-                                <
-                                /div>
-                            );
+const EditInfoRow = ({ label, name, value, placeholder }) => (
+  <div>
+    <label
+      htmlFor={name}
+      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+    >
+      {label}
+    </label>
+    <input
+      type="text"
+      id={name}
+      name={name}
+      value={value}
+      onChange={handleInputChange}
+      placeholder={placeholder}
+      className="mt-1 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+    />
+  </div>
+);
 
-                            return ( <
-                                div className = "max-w-4xl mx-auto px-4 py-6" >
-                                <
-                                div className = "flex justify-between items-center mb-6" >
-                                <
-                                h2 className = "text-2xl font-bold text-gray-900 dark:text-white flex items-center" >
-                                <
-                                User className = "mr-3 h-6 w-6" / > { t('profileTitle') } <
-                                /h2> {
-                                    !isEditing && ( <
-                                        button onClick = {
-                                            () => setIsEditing(true) }
-                                        className = "flex items-center text-sm text-blue-500 hover:text-blue-600 font-medium" >
-                                        <
-                                        Edit className = "h-4 w-4 mr-1" / > { t('editProfile') } <
-                                        /button>
-                                    )
-                                } <
-                                /div>
 
-                                {
-                                    showSuccess && ( <
-                                        div className = "bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-3 mb-4 flex items-center animate-fade-in" >
-                                        <
-                                        CheckCircle className = "h-5 w-5 text-green-500 mr-2" / >
-                                        <
-                                        p className = "text-sm text-green-700 dark:text-green-200" > { t('profileSaved') } < /p> <
-                                        /div>
-                                    )
-                                }
+                            return (
+  <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="flex justify-between items-center mb-6">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+        <User className="mr-3 h-6 w-6" /> {t('profileTitle')}
+      </h2>
+      {!isEditing && (
+        <button
+          onClick={() => setIsEditing(true)}
+          className="flex items-center text-sm text-blue-500 hover:text-blue-600 font-medium"
+        >
+          <Edit className="h-4 w-4 mr-1" /> {t('editProfile')}
+        </button>
+      )}
+    </div>
 
-                                <
-                                div className = "bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-6" > {
-                                    isEditing ? ( <
-                                        div className = "space-y-6" >
-                                        <
-                                        div >
-                                        <
-                                        h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-4" > { t('personalInfo') } < /h3> <
-                                        div className = "space-y-4" >
-                                        <
-                                        EditInfoRow label = { t('fullName') }
-                                        name = "name"
-                                        value = { tempProfile.name }
-                                        placeholder = { t('fullName') }
-                                        /> <
-                                        EditInfoRow label = { t('age') }
-                                        name = "age"
-                                        value = { tempProfile.age }
-                                        placeholder = { t('age') }
-                                        /> <
-                                        EditInfoRow label = { t('bloodGroup') }
-                                        name = "bloodGroup"
-                                        value = { tempProfile.bloodGroup }
-                                        placeholder = "e.g., A+, O-" / >
-                                        <
-                                        /div> <
-                                        /div> <
-                                        div className = "border-t border-gray-200 dark:border-gray-700 pt-6" >
-                                        <
-                                        h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-4" > { t('healthInfo') } < /h3> <
-                                        div className = "space-y-4" >
-                                        <
-                                        EditInfoRow label = { t('allergies') }
-                                        name = "allergies"
-                                        value = { tempProfile.allergies }
-                                        placeholder = { t('none') }
-                                        /> <
-                                        EditInfoRow label = { t('chronicConditions') }
-                                        name = "conditions"
-                                        value = { tempProfile.conditions }
-                                        placeholder = { t('egConditions') }
-                                        /> <
-                                        /div> <
-                                        /div> <
-                                        div className = "flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700" >
-                                        <
-                                        button onClick = {
-                                            () => {
-                                                setIsEditing(false);
-                                                setTempProfile(userProfile);
-                                            }
-                                        }
-                                        className = "px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500" >
-                                        Cancel <
-                                        /button> <
-                                        button onClick = { handleSave }
-                                        className = "px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600" > { t('saveProfile') } <
-                                        /button> <
-                                        /div> <
-                                        /div>
-                                    ) : ( <
-                                        div className = "space-y-6" >
-                                        <
-                                        div >
-                                        <
-                                        h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-4" > { t('personalInfo') } < /h3> <
-                                        dl className = "grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6" >
-                                        <
-                                        ProfileInfoRow label = { t('fullName') }
-                                        value = { userProfile.name }
-                                        placeholder = { t('fullName') }
-                                        /> <
-                                        ProfileInfoRow label = { t('age') }
-                                        value = { userProfile.age }
-                                        placeholder = { t('age') }
-                                        /> <
-                                        ProfileInfoRow label = { t('bloodGroup') }
-                                        value = { userProfile.bloodGroup }
-                                        placeholder = "A+, O-, ..." / >
-                                        <
-                                        /dl> <
-                                        /div> <
-                                        div className = "border-t border-gray-200 dark:border-gray-700 pt-6" >
-                                        <
-                                        h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-4" > { t('healthInfo') } < /h3> <
-                                        dl className = "grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6" >
-                                        <
-                                        ProfileInfoRow label = { t('allergies') }
-                                        value = { userProfile.allergies }
-                                        placeholder = { t('none') }
-                                        /> <
-                                        ProfileInfoRow label = { t('chronicConditions') }
-                                        value = { userProfile.conditions }
-                                        placeholder = { t('none') }
-                                        /> <
-                                        /dl> <
-                                        /div> <
-                                        /div>
-                                    )
-                                } <
-                                /div> <
-                                /div>
-                            );
-                        };
+    {showSuccess && (
+      <div className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-3 mb-4 flex items-center animate-fade-in">
+        <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+        <p className="text-sm text-green-700 dark:text-green-200">{t('profileSaved')}</p>
+      </div>
+    )}
+
+    <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-6">
+      {isEditing ? (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('personalInfo')}</h3>
+            <div className="space-y-4">
+              <EditInfoRow label={t('fullName')} name="name" value={tempProfile.name} placeholder={t('fullName')} />
+              <EditInfoRow label={t('age')} name="age" value={tempProfile.age} placeholder={t('age')} />
+              <EditInfoRow label={t('bloodGroup')} name="bloodGroup" value={tempProfile.bloodGroup} placeholder="e.g., A+, O-" />
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('healthInfo')}</h3>
+            <div className="space-y-4">
+              <EditInfoRow label={t('allergies')} name="allergies" value={tempProfile.allergies} placeholder={t('none')} />
+              <EditInfoRow label={t('chronicConditions')} name="conditions" value={tempProfile.conditions} placeholder={t('egConditions')} />
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                setTempProfile(userProfile);
+              }}
+              className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500"
+            >
+              Cancel
+            </button>
+            <button onClick={handleSave} className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+              {t('saveProfile')}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('personalInfo')}</h3>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+              <ProfileInfoRow label={t('fullName')} value={userProfile.name} placeholder={t('fullName')} />
+              <ProfileInfoRow label={t('age')} value={userProfile.age} placeholder={t('age')} />
+              <ProfileInfoRow label={t('bloodGroup')} value={userProfile.bloodGroup} placeholder="A+, O-, ..." />
+            </dl>
+          </div>
+
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('healthInfo')}</h3>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+              <ProfileInfoRow label={t('allergies')} value={userProfile.allergies} placeholder={t('none')} />
+              <ProfileInfoRow label={t('chronicConditions')} value={userProfile.conditions} placeholder={t('none')} />
+            </dl>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+);
+
 
                         // Navigation Component
-                        const Navigation = () => {
-                            const { currentView, setCurrentView, t } = useContext(AppContext);
-                            const navItems = [
-                                { id: 'dashboard', icon: Home, label: t('navHome') },
-                                { id: 'chatbot', icon: MessageCircle, label: t('navAssistant') },
-                                { id: 'hospitals', icon: Hospital, label: t('navHospitals') },
-                                { id: 'alerts', icon: Bell, label: t('navAlerts') }
-                            ];
+                    const Navigation = () => {
+  const { currentView, setCurrentView, t } = useContext(AppContext);
 
-                            return ( <
-                                nav className = "fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-t border-gray-200/50 dark:border-gray-700/50 z-50" >
-                                <
-                                div className = "max-w-md mx-auto px-4" >
-                                <
-                                div className = "flex justify-around py-2" > {
-                                    navItems.map((item) => {
-                                        const IconComponent = item.icon;
-                                        return ( <
-                                            button key = { item.id }
-                                            onClick = {
-                                                () => setCurrentView(item.id) }
-                                            className = { `flex flex-col items-center justify-center py-2 rounded-lg transition-colors w-20 ${
-                                currentView === item.id
-                                    ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/50'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400'
-                                }` } >
-                                            <
-                                            IconComponent className = "h-5 w-5 mb-1" / >
-                                            <
-                                            span className = "text-xs font-medium" > { item.label } < /span> <
-                                            /button>
-                                        );
-                                    })
-                                } <
-                                /div> <
-                                /div> <
-                                /nav>
-                            );
-                        };
+  const navItems = [
+    { id: 'dashboard', icon: Home, label: t('navHome') },
+    { id: 'chatbot', icon: MessageCircle, label: t('navAssistant') },
+    { id: 'hospitals', icon: Hospital, label: t('navHospitals') },
+    { id: 'alerts', icon: Bell, label: t('navAlerts') },
+  ];
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-t border-gray-200/50 dark:border-gray-700/50 z-50">
+      <div className="max-w-md mx-auto px-4">
+        <div className="flex justify-around py-2">
+          {navItems.map((item) => {
+            const IconComponent = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentView(item.id)}
+                className={`flex flex-col items-center justify-center py-2 rounded-lg transition-colors w-20 ${
+                  currentView === item.id
+                    ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/50'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400'
+                }`}
+              >
+                <IconComponent className="h-5 w-5 mb-1" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
+};
+
 
                         // ** NEW VIEWS / COMPONENTS **
 
                         const FirstAidGuide = () => {
-                            const { t, language } = useContext(AppContext);
-                            const [selectedGuide, setSelectedGuide] = useState(null);
+  const { t, language } = useContext(AppContext);
+  const [selectedGuide, setSelectedGuide] = useState(null);
 
-                            if (selectedGuide) {
-                                return ( <
-                                    div className = "max-w-4xl mx-auto px-4 py-6 animate-fade-in" >
-                                    <
-                                    button onClick = {
-                                        () => setSelectedGuide(null) }
-                                    className = "flex items-center text-sm text-blue-500 hover:underline mb-4" >
-                                    &
-                                    larr; Back to all guides <
-                                    /button> <
-                                    h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-4" > { t(selectedGuide.titleKey) } < /h2> <
-                                    div className = "space-y-4" > {
-                                        selectedGuide.steps[language].map((step, index) => ( <
-                                            div key = { index }
-                                            className = "flex items-start bg-white/70 dark:bg-gray-800/70 backdrop-blur-md p-4 rounded-xl shadow-lg animate-card-pop-in"
-                                            style = {
-                                                { animationDelay: `${index*100}ms` } } >
-                                            <
-                                            div className = "flex-shrink-0 w-8 h-8 mr-4 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold" > { index + 1 } <
-                                            /div> <
-                                            p className = "text-gray-700 dark:text-gray-300" > { step } < /p> <
-                                            /div>
-                                        ))
-                                    } <
-                                    /div> <
-                                    /div>
-                                );
-                            }
+  if (selectedGuide) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-6 animate-fade-in">
+        <button
+          onClick={() => setSelectedGuide(null)}
+          className="flex items-center text-sm text-blue-500 hover:underline mb-4"
+        >
+          &larr; Back to all guides
+        </button>
 
-                            return ( <
-                                div className = "max-w-7xl mx-auto px-4 py-6" >
-                                <
-                                h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-6" > { t('firstAidTitle') } < /h2> <
-                                div className = "grid grid-cols-1 md:grid-cols-2 gap-6" > {
-                                    mockFirstAidGuides.map((guide, index) => ( <
-                                        button key = { guide.id }
-                                        onClick = {
-                                            () => setSelectedGuide(guide) }
-                                        className = "text-left group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg cursor-pointer 
-                                        transition - all duration - 300 ease - in -out transform hover: -translate - y - 2 hover: shadow - 2 xl animate - card - pop - in "
-                                        style = {
-                                            { transitionDelay: `${index * 150}ms` } } >
-                                        <
-                                        div className = "p-6" >
-                                        <
-                                        h3 className = "text-xl font-semibold text-gray-900 dark:text-white" > { t(guide.titleKey) } < /h3> <
-                                        /div> <
-                                        /button>
-                                    ))
-                                } <
-                                /div> <
-                                /div>
-                            );
-                        };
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          {t(selectedGuide.titleKey)}
+        </h2>
 
-                        const AshaWorkerDirectory = () => {
-                            const { t } = useContext(AppContext);
-                            const [searchTerm, setSearchTerm] = useState('');
+        <div className="space-y-4">
+          {selectedGuide.steps[language].map((step, index) => (
+            <div
+              key={index}
+              className="flex items-start bg-white/70 dark:bg-gray-800/70 backdrop-blur-md p-4 rounded-xl shadow-lg animate-card-pop-in"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="flex-shrink-0 w-8 h-8 mr-4 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
+                {index + 1}
+              </div>
+              <p className="text-gray-700 dark:text-gray-300">{step}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
-                            const filteredWorkers = mockAshaWorkers.filter(worker =>
-                                worker.village.toLowerCase().includes(searchTerm.toLowerCase())
-                            );
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-6">
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+        {t('firstAidTitle')}
+      </h2>
 
-                            return ( <
-                                div className = "max-w-7xl mx-auto px-4 py-6" >
-                                <
-                                h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-4" > { t('ashaDirectoryTitle') } < /h2>
-
-                                <
-                                div className = "relative mb-6" >
-                                <
-                                input type = "text"
-                                placeholder = { t('searchByVillage') }
-                                value = { searchTerm }
-                                onChange = {
-                                    (e) => setSearchTerm(e.target.value) }
-                                className = "w-full pl-10 pr-4 py-3 bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg focus:ring-2 focus:ring-blue-500 border-0" /
-                                >
-                                <
-                                Search className = "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" / >
-                                <
-                                /div>
-
-                                <
-                                div className = "space-y-4" > {
-                                    filteredWorkers.map((worker, index) => ( <
-                                        div key = { worker.id }
-                                        className = "bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-4 flex items-center justify-between animate-card-pop-in"
-                                        style = {
-                                            { animationDelay: `${index * 100}ms` } } >
-                                        <
-                                        div >
-                                        <
-                                        p className = "font-semibold text-gray-900 dark:text-white" > { worker.name } < /p> <
-                                        p className = "text-sm text-gray-600 dark:text-gray-400" > { worker.village } < /p> <
-                                        /div> <
-                                        a href = { `tel:${worker.phone}` }
-                                        className = "group flex-shrink-0 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center justify-center transition-all duration-300 transform active:scale-95 shadow-md hover:shadow-lg" >
-                                        <
-                                        Phone className = "h-4 w-4 mr-2 transition-transform group-hover:rotate-12" / > { t('callNow') } <
-                                        /a> <
-                                        /div>
-                                    ))
-                                } <
-                                /div> <
-                                /div>
-                            );
-                        };
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {mockFirstAidGuides.map((guide, index) => (
+          <button
+            key={guide.id}
+            onClick={() => setSelectedGuide(guide)}
+            className="text-left group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg cursor-pointer transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl animate-card-pop-in"
+            style={{ transitionDelay: `${index * 150}ms` }}
+          >
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {t(guide.titleKey)}
+              </h3>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 
-                        export default HealthcareApp;
+                      const AshaWorkerDirectory = () => {
+  const { t } = useContext(AppContext);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredWorkers = mockAshaWorkers.filter(worker =>
+    worker.village.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-6">
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+        {t('ashaDirectoryTitle')}
+      </h2>
+
+      <div className="relative mb-6">
+        <input
+          type="text"
+          placeholder={t('searchByVillage')}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg focus:ring-2 focus:ring-blue-500 border-0"
+        />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+      </div>
+
+      <div className="space-y-4">
+        {filteredWorkers.map((worker, index) => (
+          <div
+            key={worker.id}
+            className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-4 flex items-center justify-between animate-card-pop-in"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            <div>
+              <p className="font-semibold text-gray-900 dark:text-white">{worker.name}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{worker.village}</p>
+            </div>
+            <a
+              href={`tel:${worker.phone}`}
+              className="group flex-shrink-0 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center justify-center transition-all duration-300 transform active:scale-95 shadow-md hover:shadow-lg"
+            >
+              <Phone className="h-4 w-4 mr-2 transition-transform group-hover:rotate-12" /> {t('callNow')}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default HealthcareApp;
