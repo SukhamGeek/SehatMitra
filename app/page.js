@@ -893,7 +893,6 @@ const MyHealthResources = () => {
   );
 };
 
-// Emergency Services Component
 const EmergencyServices = () => {
   const { t } = useContext(AppContext);
   const emergencyNumbers = [
