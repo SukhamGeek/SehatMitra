@@ -1066,8 +1066,6 @@ const Chatbot = () => {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-    const 
     const API_BASE = "https://alcohol-loan-layers-objects.trycloudflare.com";
 
     const getBackendResponse = async (userMessage) => {
