@@ -422,7 +422,6 @@ const playSound = (text, language = 'en') => {
 };
 
 const startVoiceRecognition = (onResult, language = 'en') => {
-    // CORRECTED: Replaced alert with console.warn for better UX, as alerts are blocking.
     if (!('webkitSpeechRecognition' in window)) {
         console.warn('Voice recognition not supported in your browser.');
         return null;
@@ -484,141 +483,11 @@ const ErrorMessage = ({ message, onRetry }) => ( <
     /div>
 );
 
-
-// Main App Component
-const HealthcareApp = () => {
-    const [currentView, setCurrentView] = useState('dashboard');
-    const [darkMode, setDarkMode] = useState(false);
-    const [language, setLanguage] = useState('en');
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    // CORRECTED: Initialized error state to null. It will be used for global error display.
-    const [error, setError] = useState(null);
-    const [showWelcome, setShowWelcome] = useState(true);
-
-    const [userProfile, setUserProfile] = useState({
-        name: '',
-        age: '',
-        bloodGroup: '',
-        allergies: '',
-        conditions: ''
-    });
-
-    useEffect(() => {
-        try {
-            const savedProfile = localStorage.getItem('sehatMitraProfile');
-            if (savedProfile) {
-                setUserProfile(JSON.parse(savedProfile));
-            }
-        } catch (e) {
-            console.error("Failed to parse user profile from localStorage", e);
-            setError("Could not load your saved profile.");
-        }
-        const welcomeTimer = setTimeout(() => {
-            setShowWelcome(false);
-        }, 2500); // Welcome screen duration
-
-        return () => clearTimeout(welcomeTimer);
-    }, []);
-
-    const saveUserProfile = (profile) => {
-        try {
-            localStorage.setItem('sehatMitraProfile', JSON.stringify(profile));
-            setUserProfile(profile);
-        } catch (e) {
-            console.error("Failed to save user profile to localStorage", e);
-            setError("Your profile could not be saved.");
-        }
-    };
-
-
-    useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }, [darkMode]);
-
-    const t = (key) => {
-        return translations[key] ? translations[key][language] || translations[key]['en'] : key;
-    };
-
-    const contextValue = {
-        currentView,
-        setCurrentView,
-        darkMode,
-        setDarkMode,
-        language,
-        setLanguage,
-        isMenuOpen,
-        setIsMenuOpen,
-        loading,
-        setLoading,
-        error,
-        setError,
-        t,
-        userProfile,
-        saveUserProfile
-    };
-
-    const renderContent = () => {
-        if (error) {
-            return <ErrorMessage message = { error }
-            onRetry = {
-                () => setError(null)
-            }
-            />;
-        }
-        switch (currentView) {
-            case 'dashboard':
-                return <Dashboard / > ;
-            case 'chatbot':
-                return <Chatbot / > ;
-            case 'hospitals':
-                return <Hospitals / > ;
-            case 'alerts':
-                return <Alerts / > ;
-            case 'profile':
-                return <Profile / > ;
-            case 'firstAid':
-                return <FirstAidGuide / > ;
-            case 'ashaWorkers':
-                return <AshaWorkerDirectory / > ;
-            default:
-                return <Dashboard / > ;
-        }
-    };
-
-    return ( <
-        AppContext.Provider value = { contextValue } >
-        <
-        AppStyles / > { showWelcome && < WelcomeScreen / > } <
-        div className = { `transition-opacity duration-500 ${
-        showWelcome ? "opacity-0" : "opacity-100"
-      }` } >
-        <
-        div className = "aurora-background" > < /div> <
-        div className = "relative bg-gray-50/50 dark:bg-gray-900/50 min-h-screen" >
-        <
-        Header / >
-        <
-        main className = "pb-20" > { renderContent() } < /main> <
-        Navigation / >
-        <
-        /div> <
-        /div> <
-        /AppContext.Provider>
-    );
-};
-
+// SUB-COMPONENTS (Defined before main App component to avoid reference errors)
 const WelcomeScreen = () => {
     const { darkMode } = useContext(AppContext);
-
     return ( <
-        div className = { `welcome-screen animate-fade-in ${
-        darkMode ? "dark" : ""
-      }` } >
+        div className = { `welcome-screen animate-fade-in ${darkMode ? "dark" : ""}` } >
         <
         CustomSehatMitraLogo className = "w-24 h-24 welcome-screen-logo" / >
         <
@@ -632,8 +501,37 @@ const WelcomeScreen = () => {
     );
 };
 
+const OutbreakAlertBar = () => {
+    const { t } = useContext(AppContext);
+    const [currentAlert, setCurrentAlert] = useState(0);
 
-// Header Component
+    useEffect(() => {
+        if (mockOutbreaks.length > 1) {
+            const interval = setInterval(() => {
+                setCurrentAlert((prev) => (prev + 1) % mockOutbreaks.length);
+            }, 5000);
+            return () => clearInterval(interval);
+        }
+    }, []);
+
+    if (mockOutbreaks.length === 0) return null;
+
+    const alert = mockOutbreaks[currentAlert];
+    const isHighSeverity = alert.severity === 'high';
+    const bgColor = isHighSeverity ? 'bg-red-100 dark:bg-red-900/80' : 'bg-yellow-100 dark:bg-yellow-900/80';
+    const textColor = isHighSeverity ? 'text-red-800 dark:text-red-200' : 'text-yellow-800 dark:text-yellow-200';
+
+    return ( <
+        div className = { `${bgColor} ${textColor} px-4 py-2 text-center text-sm` } >
+        <
+        AlertTriangle className = "inline h-4 w-4 mr-1" / >
+        <
+        span className = "font-medium" > { t("alert") } < /span>{" "} { alert.cases } { t(alert.diseaseKey) } { t("casesIn") } { alert.area } <
+        span className = "ml-2 text-xs" > •{ t(alert.preventionKey) } < /span> <
+        /div>
+    );
+};
+
 const Header = () => {
     const { darkMode, setDarkMode, language, setLanguage, t, setCurrentView } = useContext(AppContext);
 
@@ -677,13 +575,7 @@ const Header = () => {
         button onClick = { toggleDarkMode }
         className = "p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         aria - label = "Toggle theme" >
-        {
-            darkMode ? ( <
-                Sun className = "h-5 w-5" / >
-            ) : ( <
-                Moon className = "h-5 w-5" / >
-            )
-        } <
+        { darkMode ? ( < Sun className = "h-5 w-5" / > ) : ( < Moon className = "h-5 w-5" / > ) } <
         /button>
 
         { /* Profile Button */ } <
@@ -697,155 +589,17 @@ const Header = () => {
         /button> <
         /div> <
         /div> <
-        /div>
-
-        { /* Outbreak Alert Bar */ } <
+        /div> <
         OutbreakAlertBar / >
         <
         /header>
     );
 };
 
-
-// Outbreak Alert Bar
-const OutbreakAlertBar = () => {
-    const { t } = useContext(AppContext);
-    const [currentAlert, setCurrentAlert] = useState(0);
-
-    useEffect(() => {
-        if (mockOutbreaks.length > 1) {
-            const interval = setInterval(() => {
-                setCurrentAlert((prev) => (prev + 1) % mockOutbreaks.length);
-            }, 5000);
-            return () => clearInterval(interval);
-        }
-    }, []);
-
-    if (mockOutbreaks.length === 0) return null;
-
-    const alert = mockOutbreaks[currentAlert];
-    const isHighSeverity = alert.severity === 'high';
-    const bgColor = isHighSeverity ? 'bg-red-100 dark:bg-red-900/80' : 'bg-yellow-100 dark:bg-yellow-900/80';
-    const textColor = isHighSeverity ? 'text-red-800 dark:text-red-200' : 'text-yellow-800 dark:text-yellow-200';
-
-    return ( <
-        div className = { `${bgColor} ${textColor} px-4 py-2 text-center text-sm` } >
-        <
-        AlertTriangle className = "inline h-4 w-4 mr-1" / >
-        <
-        span className = "font-medium" > { t("alert") } < /span>{" "} { alert.cases } { t(alert.diseaseKey) } { t("casesIn") } { alert.area } <
-        span className = "ml-2 text-xs" > •{ t(alert.preventionKey) } < /span> <
-        /div>
-    );
-};
-
-
-// Dashboard Component
-const Dashboard = () => {
-    const { setCurrentView, t, userProfile } = useContext(AppContext);
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoaded(true), 100);
-        return () => clearTimeout(timer);
-    }, []);
-
-    const colorMap = {
-        blue: { bg: 'from-blue-400 to-indigo-500', shadow: 'hover:shadow-indigo-500/30' },
-        green: { bg: 'from-green-400 to-emerald-500', shadow: 'hover:shadow-emerald-500/30' },
-        orange: { bg: 'from-orange-400 to-amber-500', shadow: 'hover:shadow-amber-500/30' },
-    };
-
-    const dashboardCards = [
-        { title: t('healthAssistantTitle'), description: t('healthAssistantDesc'), icon: MessageCircle, color: 'blue', view: 'chatbot' },
-        { title: t('findHospitalsTitle'), description: t('findHospitalsDesc'), icon: Hospital, color: 'green', view: 'hospitals' },
-        { title: t('healthAlertsTitle'), description: t('healthAlertsDesc'), icon: Bell, color: 'orange', view: 'alerts' },
-    ];
-
-    const welcomeText = userProfile.name ? `${t('welcomeMessage')}, ${userProfile.name}!` : t('welcomeMessage') + " to " + t('appName');
-
-    return ( <
-        div className = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" > { /* Welcome Text */ } <
-        div className = { `transition-all duration-700 ${
-        isLoaded ? "opacity-100" : "opacity-0"
-      }` } >
-        <
-        h2 className = "text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2" > { welcomeText } <
-        /h2> <
-        p className = "text-gray-600 dark:text-gray-400" > { t("appSubtitle") } < /p> <
-        /div>
-
-        { /* Health Camp Banner */ } <
-        div className = "my-8" >
-        <
-        HealthCampBanner / >
-        <
-        /div>
-
-        { /* Dashboard Cards */ } <
-        div className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" > {
-            dashboardCards.map((card, index) => {
-                const IconComponent = card.icon;
-                const styles = colorMap[card.color];
-                return ( <
-                    div key = { card.view }
-                    onClick = {
-                        () => setCurrentView(card.view) }
-                    className = { `group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg cursor-pointer 
-              transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl ${styles.shadow}
-              ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}` }
-                    style = {
-                        { transitionDelay: `${index * 100}ms` } } >
-                    <
-                    div className = { `absolute inset-0 bg-gradient-to-br ${styles.bg} rounded-xl opacity-10 dark:opacity-20 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity duration-300` } >
-                    < /div> <
-                    div className = "p-6 relative" >
-                    <
-                    div className = { `inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${styles.bg} text-white rounded-lg mb-4 transition-transform duration-300 group-hover:scale-110 shadow-lg` } >
-                    <
-                    IconComponent className = "h-6 w-6" / >
-                    <
-                    /div> <
-                    h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-2" > { card.title } <
-                    /h3> <
-                    p className = "text-gray-600 dark:text-gray-400 text-sm" > { card.description } <
-                    /p> <
-                    /div> <
-                    /div>
-                );
-            })
-        } <
-        /div>
-
-        { /* Resources */ } <
-        div className = "my-8" >
-        <
-        MyHealthResources / >
-        <
-        /div>
-
-        { /* Emergency + Tips */ } <
-        div className = { `transition-all duration-700 delay-500 mt-8 ${
-        isLoaded ? "opacity-100" : "opacity-0"
-      }` } >
-        <
-        EmergencyServices / >
-        <
-        HealthTips / >
-        <
-        /div> <
-        /div>
-    );
-};
-
-
-
-// ** NEW COMPONENTS for Dashboard **
 const HealthCampBanner = () => {
     const { t } = useContext(AppContext);
     const camp = mockHealthCamps[0];
 
-    // Health Camp Card
     return ( <
         div className = "relative bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow-xl p-6 overflow-hidden animate-card-pop-in"
         style = {
@@ -871,7 +625,6 @@ const HealthCampBanner = () => {
     );
 };
 
-// MyHealthResources Component
 const MyHealthResources = () => {
     const { t, setCurrentView } = useContext(AppContext);
 
@@ -912,7 +665,6 @@ const MyHealthResources = () => {
     );
 };
 
-// Emergency Services Component
 const EmergencyServices = () => {
     const { t } = useContext(AppContext);
     const emergencyNumbers = [
@@ -954,31 +706,28 @@ const EmergencyServices = () => {
     );
 };
 
-// Health Tips Component
 const HealthTips = () => {
     const { t, userProfile, setError } = useContext(AppContext);
     const [tips, setTips] = useState(t('healthTips'));
     const [isPersonalized, setIsPersonalized] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Default tips need to be updated when language changes
     useEffect(() => {
         if (!isPersonalized) {
             setTips(t('healthTips'));
         }
     }, [t, isPersonalized]);
 
-
     const getPersonalizedTips = async() => {
         setIsLoading(true);
         setError(null);
 
         const systemPrompt = `You are a health expert creating personalized tips for a user in rural Punjab, India.
-        User's Age: ${userProfile.age || 'Not specified'}
-        User's Chronic Conditions: ${userProfile.conditions || 'None specified'}
-        Generate 3 simple, actionable, and encouraging health tips tailored to this user. The tips should be easy to follow with limited resources. Focus on diet, light exercise, or lifestyle adjustments. The language must be extremely simple. Output only the tips in a numbered list, like "1. First tip.\n2. Second tip.\n3. Third tip.".`;
+User's Age: ${userProfile.age || 'Not specified'}
+User's Chronic Conditions: ${userProfile.conditions || 'None specified'}
+Generate 3 simple, actionable, and encouraging health tips tailored to this user. The tips should be easy to follow with limited resources. Focus on diet, light exercise, or lifestyle adjustments. The language must be extremely simple. Output only the tips in a numbered list, like "1. First tip.\\n2. Second tip.\\n3. Third tip.".`;
 
-        const apiKey = "YOUR_GEMINI_API_KEY_HEREAIzaSyAFQzp0kxWTPRh7JNQkO6Ac2AmI2tnTp9g"; // 👈 Paste your actual key here
+        const apiKey = ""; // API Key will be injected by the environment
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
         const payload = { contents: [{ parts: [{ text: systemPrompt }] }] };
 
@@ -1038,9 +787,7 @@ const HealthTips = () => {
             )
         } { t('getPersonalizedTips') } <
         /button> <
-        /div>
-
-        <
+        /div> <
         div className = "grid grid-cols-1 sm:grid-cols-2 gap-3" > {
             tips.map((tip, index) => ( <
                 div key = { index }
@@ -1056,8 +803,89 @@ const HealthTips = () => {
     );
 };
 
+const Dashboard = () => {
+    const { setCurrentView, t, userProfile } = useContext(AppContext);
+    const [isLoaded, setIsLoaded] = useState(false);
 
-// Chatbot Component
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoaded(true), 100);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const colorMap = {
+        blue: { bg: 'from-blue-400 to-indigo-500', shadow: 'hover:shadow-indigo-500/30' },
+        green: { bg: 'from-green-400 to-emerald-500', shadow: 'hover:shadow-emerald-500/30' },
+        orange: { bg: 'from-orange-400 to-amber-500', shadow: 'hover:shadow-amber-500/30' },
+    };
+
+    const dashboardCards = [
+        { title: t('healthAssistantTitle'), description: t('healthAssistantDesc'), icon: MessageCircle, color: 'blue', view: 'chatbot' },
+        { title: t('findHospitalsTitle'), description: t('findHospitalsDesc'), icon: Hospital, color: 'green', view: 'hospitals' },
+        { title: t('healthAlertsTitle'), description: t('healthAlertsDesc'), icon: Bell, color: 'orange', view: 'alerts' },
+    ];
+
+    const welcomeText = userProfile.name ? `${t('welcomeMessage')}, ${userProfile.name}!` : t('welcomeMessage') + " to " + t('appName');
+
+    return ( <
+        div className = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" >
+        <
+        div className = { `transition-all duration-700 ${isLoaded ? "opacity-100" : "opacity-0"}` } >
+        <
+        h2 className = "text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2" > { welcomeText } <
+        /h2> <
+        p className = "text-gray-600 dark:text-gray-400" > { t("appSubtitle") } < /p> <
+        /div> <
+        div className = "my-8" >
+        <
+        HealthCampBanner / >
+        <
+        /div> <
+        div className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" > {
+            dashboardCards.map((card, index) => {
+                const IconComponent = card.icon;
+                const styles = colorMap[card.color];
+                return ( <
+                    div key = { card.view }
+                    onClick = {
+                        () => setCurrentView(card.view) }
+                    className = { `group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg cursor-pointer transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl ${styles.shadow} ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}` }
+                    style = {
+                        { transitionDelay: `${index * 100}ms` } } >
+                    <
+                    div className = { `absolute inset-0 bg-gradient-to-br ${styles.bg} rounded-xl opacity-10 dark:opacity-20 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity duration-300` } > < /div> <
+                    div className = "p-6 relative" >
+                    <
+                    div className = { `inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${styles.bg} text-white rounded-lg mb-4 transition-transform duration-300 group-hover:scale-110 shadow-lg` } >
+                    <
+                    IconComponent className = "h-6 w-6" / >
+                    <
+                    /div> <
+                    h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-2" > { card.title } <
+                    /h3> <
+                    p className = "text-gray-600 dark:text-gray-400 text-sm" > { card.description } <
+                    /p> <
+                    /div> <
+                    /div>
+                );
+            })
+        } <
+        /div> <
+        div className = "my-8" >
+        <
+        MyHealthResources / >
+        <
+        /div> <
+        div className = { `transition-all duration-700 delay-500 mt-8 ${isLoaded ? "opacity-100" : "opacity-0"}` } >
+        <
+        EmergencyServices / >
+        <
+        HealthTips / >
+        <
+        /div> <
+        /div>
+    );
+};
+
 const Chatbot = () => {
     const { language, t, setError } = useContext(AppContext);
     const [messages, setMessages] = useState([]);
@@ -1067,7 +895,6 @@ const Chatbot = () => {
     const [showClearConfirm, setShowClearConfirm] = useState(false);
     const messagesEndRef = useRef(null);
 
-    // Load chat history from localStorage on component mount
     useEffect(() => {
         try {
             const savedChat = localStorage.getItem('sehatMitraChat');
@@ -1081,7 +908,6 @@ const Chatbot = () => {
         }
     }, [t]);
 
-    // Save chat history to localStorage whenever messages change
     useEffect(() => {
         if (messages.length > 0) {
             try {
@@ -1097,10 +923,10 @@ const Chatbot = () => {
         messagesEndRef.current ? .scrollIntoView({ behavior: 'smooth' });
     };
 
-
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+
     const API_BASE = "https://alcohol-loan-layers-objects.trycloudflare.com";
 
     const getBackendResponse = async(userMessage) => {
@@ -1151,16 +977,17 @@ const Chatbot = () => {
             setInputMessage(transcript);
             setIsListening(false);
         }, language);
-        // If recognition fails to start (e.g. not supported), reset the listening state.
         if (!recognition) {
             setIsListening(false);
         }
     };
+
     const speakMessage = (content) => { playSound(content, language) };
     const handleKeyPress = (e) => { if (e.key === 'Enter' && !isLoading) sendMessage(); };
 
     return ( <
-        div className = "max-w-4xl mx-auto px-4 py-6 h-[calc(100vh-120px)] flex flex-col animate-fade-in" > { /* Header */ } <
+        div className = "max-w-4xl mx-auto px-4 py-6 h-[calc(100vh-120px)] flex flex-col animate-fade-in" >
+        <
         div className = "bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg p-4 mb-4" >
         <
         div className = "flex items-center justify-between" >
@@ -1171,10 +998,8 @@ const Chatbot = () => {
         <
         div >
         <
-        h2 className = "text-xl font-semibold text-gray-900 dark:text-white" > { t('chatbotHeaderTitle') } <
-        /h2> <
-        p className = "text-sm text-gray-500 dark:text-gray-400" > { t('chatbotHeaderSubtitle') } <
-        /p> <
+        h2 className = "text-xl font-semibold text-gray-900 dark:text-white" > { t('chatbotHeaderTitle') } < /h2> <
+        p className = "text-sm text-gray-500 dark:text-gray-400" > { t('chatbotHeaderSubtitle') } < /p> <
         /div> <
         /div> <
         div className = "flex items-center space-x-2" >
@@ -1193,16 +1018,14 @@ const Chatbot = () => {
         /div> <
         /div>
 
-        { /* Confirmation Modal */ } {
+        {
             showClearConfirm && ( <
                 div className = "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in" >
                 <
                 div className = "bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 m-4 max-w-sm w-full" >
                 <
-                h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-2" > { t('clearChat') } <
-                /h3> <
-                p className = "text-sm text-gray-600 dark:text-gray-400 mb-4" > { t('clearChatConfirm') } <
-                /p> <
+                h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-2" > { t('clearChat') } < /h3> <
+                p className = "text-sm text-gray-600 dark:text-gray-400 mb-4" > { t('clearChatConfirm') } < /p> <
                 div className = "flex justify-end space-x-2" >
                 <
                 button onClick = {
@@ -1220,30 +1043,19 @@ const Chatbot = () => {
             )
         }
 
-        { /* Chat Window */ } <
+        <
         div className = "flex-1 bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg overflow-hidden flex flex-col" >
         <
         div className = "flex-1 overflow-y-auto p-4 space-y-4" > {
             messages.map((message, index) => ( <
                 div key = { index }
-                className = { `flex items-end ${
-              message.type === 'user'
-                ? 'justify-end animate-slide-in-right'
-                : 'justify-start animate-slide-in-left'
-            }` } >
+                className = { `flex items-end ${message.type === 'user' ? 'justify-end animate-slide-in-right' : 'justify-start animate-slide-in-left'}` } >
                 <
-                div className = { `max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${
-                message.type === 'user'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-              }` } >
+                div className = { `max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${message.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'}` } >
                 <
                 p className = "text-sm"
                 dangerouslySetInnerHTML = {
-                    {
-                        __html: message.content.replace(/\n/g, '<br />'),
-                    }
-                }
+                    { __html: message.content.replace(/\n/g, '<br />') } }
                 /> {
                     message.type === 'bot' && ( <
                         button onClick = {
@@ -1254,19 +1066,14 @@ const Chatbot = () => {
                         /button>
                     )
                 } <
-                div className = "text-xs opacity-70 mt-1 text-right" > {
-                    new Date(message.timestamp).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    })
-                } <
+                div className = "text-xs opacity-70 mt-1 text-right" > { new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } <
                 /div> <
                 /div> <
                 /div>
             ))
         }
 
-        { /* Loading Animation */ } {
+        {
             isLoading && ( <
                 div className = "flex justify-start animate-slide-in-left" >
                 <
@@ -1286,13 +1093,13 @@ const Chatbot = () => {
         /> <
         /div>
 
-        { /* Disclaimer */ } <
+        <
         div className = "px-4 pb-2 text-xs text-gray-500 dark:text-gray-400 text-center"
         dangerouslySetInnerHTML = {
             { __html: t('chatbotDisclaimer') } }
         />
 
-        { /* Input Area */ } <
+        <
         div className = "border-t border-gray-200 dark:border-gray-600 p-4" >
         <
         div className = "flex items-center space-x-2" >
@@ -1311,11 +1118,7 @@ const Chatbot = () => {
         /div> <
         button onClick = { startVoiceInput }
         disabled = { isListening }
-        className = { `p-2 rounded-lg ${
-              isListening
-                ? 'bg-red-500 animate-pulse'
-                : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
-            } text-gray-700 dark:text-gray-300` } >
+        className = { `p-2 rounded-lg ${isListening ? 'bg-red-500 animate-pulse' : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'} text-gray-700 dark:text-gray-300` } >
         <
         Mic className = "h-5 w-5" / >
         <
@@ -1334,8 +1137,6 @@ const Chatbot = () => {
     );
 };
 
-
-// Hospitals Component
 const Hospitals = () => {
     const { t } = useContext(AppContext);
     const [loading, setLoading] = useState(true);
@@ -1364,22 +1165,15 @@ const Hospitals = () => {
         /div>
     );
 
-
     const DoctorChip = ({ doctor }) => ( <
         div className = "group flex items-center space-x-3 p-3 bg-white/10 dark:bg-black/20 rounded-lg transition-colors hover:bg-white/20 dark:hover:bg-black/30" >
         <
-        div className = { `flex-shrink-0 w-3 h-3 rounded-full transition-all duration-300 ${
-        doctor.available
-          ? 'bg-green-400 group-hover:shadow-lg group-hover:shadow-green-400/50'
-          : 'bg-red-500'
-      }` } >
+        div className = { `flex-shrink-0 w-3 h-3 rounded-full transition-all duration-300 ${doctor.available ? 'bg-green-400 group-hover:shadow-lg group-hover:shadow-green-400/50' : 'bg-red-500'}` } >
         < /div> <
         div className = "flex-1" >
         <
-        p className = "font-medium text-sm text-gray-900 dark:text-white" > { t(doctor.nameKey) } <
-        /p> <
-        p className = "text-xs text-gray-600 dark:text-gray-400" > { t(doctor.specialtyKey) } <
-        /p> <
+        p className = "font-medium text-sm text-gray-900 dark:text-white" > { t(doctor.nameKey) } < /p> <
+        p className = "text-xs text-gray-600 dark:text-gray-400" > { t(doctor.specialtyKey) } < /p> <
         /div> <
         Stethoscope className = "h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform group-hover:scale-110" / >
         <
@@ -1397,9 +1191,6 @@ const Hospitals = () => {
             card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
         };
 
-        // (rest of your code here…)
-
-
         return ( <
             div key = { hospital.id }
             ref = { cardRef }
@@ -1414,8 +1205,7 @@ const Hospitals = () => {
             <
             div className = "flex-1" >
             <
-            h3 className = "text-xl font-semibold text-gray-900 dark:text-white mb-2" > { t(hospital.nameKey) } <
-            /h3> <
+            h3 className = "text-xl font-semibold text-gray-900 dark:text-white mb-2" > { t(hospital.nameKey) } < /h3> <
             div className = "flex items-center text-gray-600 dark:text-gray-400 mb-2" >
             <
             MapPin className = "h-4 w-4 mr-2 flex-shrink-0" / >
@@ -1429,13 +1219,7 @@ const Hospitals = () => {
             span > { hospital.distance } { t('distanceAway') } < /span> <
             /div> <
             /div> <
-            div className = { `flex-shrink-0 ml-4 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-            hospital.isOpen
-              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-          }` } >
-            { hospital.isOpen ? t('open') : t('closed') } +
-            <
+            div className = { `flex-shrink-0 ml-4 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${hospital.isOpen ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}` } > { hospital.isOpen ? t('open') : t('closed') } <
             /div> <
             /div>
 
@@ -1445,8 +1229,7 @@ const Hospitals = () => {
             <
             div >
             <
-            h4 className = "font-medium text-gray-900 dark:text-white mb-3" > { t('availableDoctors') } <
-            /h4> <
+            h4 className = "font-medium text-gray-900 dark:text-white mb-3" > { t('availableDoctors') } < /h4> <
             div className = "grid grid-cols-1 sm:grid-cols-2 gap-3" > {
                 hospital.doctors.map((doctor, docIndex) => ( <
                     DoctorChip key = { docIndex }
@@ -1482,7 +1265,6 @@ const Hospitals = () => {
         );
     };
 
-
     return ( <
         div className = "max-w-7xl mx-auto px-4 py-6" >
         <
@@ -1496,9 +1278,7 @@ const Hospitals = () => {
         <
         span > { t('locationInfo') } < /span> <
         /div> <
-        /div>
-
-        {
+        /div> {
             loading ? ( <
                 div className = "grid md:grid-cols-1 lg:grid-cols-2 gap-8" >
                 <
@@ -1523,8 +1303,6 @@ const Hospitals = () => {
     );
 };
 
-
-// **ALERTS COMPONENT - REVAMPED**
 const Alerts = () => {
     const { t } = useContext(AppContext);
 
@@ -1537,9 +1315,7 @@ const Alerts = () => {
             style = {
                 { animationDelay: `${index * 150}ms` } } >
             <
-            div className = { `severity-glow bg-${severityColor}-500` } > < /div>
-
-            <
+            div className = { `severity-glow bg-${severityColor}-500` } > < /div> <
             div className = "pl-6 p-4 flex items-start space-x-4" >
             <
             div className = { `flex-shrink-0 w-12 h-12 rounded-full bg-${severityColor}-100 dark:bg-${severityColor}-500/20 flex items-center justify-center` } >
@@ -1555,32 +1331,20 @@ const Alerts = () => {
             <
             div >
             <
-            h3 className = "text-lg font-semibold text-gray-900 dark:text-white" > { t(outbreak.diseaseKey) } { t('outbreakAlertSuffix') } <
-            /h3> <
-            p className = "text-sm text-gray-600 dark:text-gray-400 font-medium" > { outbreak.cases } { t('confirmedCasesIn') } { outbreak.area } <
-            /p> <
-            /div>
-
-            <
-            span className = { `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-${severityColor}-100 text-${severityColor}-800 dark:bg-${severityColor}-900 dark:text-${severityColor}-200` } >
-            { isHigh ? t('severityHigh') : t('severityMedium') } <
+            h3 className = "text-lg font-semibold text-gray-900 dark:text-white" > { t(outbreak.diseaseKey) } { t('outbreakAlertSuffix') } < /h3> <
+            p className = "text-sm text-gray-600 dark:text-gray-400 font-medium" > { outbreak.cases } { t('confirmedCasesIn') } { outbreak.area } < /p> <
+            /div> <
+            span className = { `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-${severityColor}-100 text-${severityColor}-800 dark:bg-${severityColor}-900 dark:text-${severityColor}-200` } > { isHigh ? t('severityHigh') : t('severityMedium') } <
             /span> <
-            /div>
-
-            <
+            /div> <
             div className = "mt-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg" >
             <
-            h4 className = "font-medium text-sm text-gray-800 dark:text-gray-200 mb-1" > { t('preventionMeasures') } <
-            /h4> <
-            p className = "text-sm text-gray-600 dark:text-gray-400" > { t(outbreak.preventionKey) } <
-            /p> <
-            /div>
-
-            <
+            h4 className = "font-medium text-sm text-gray-800 dark:text-gray-200 mb-1" > { t('preventionMeasures') } < /h4> <
+            p className = "text-sm text-gray-600 dark:text-gray-400" > { t(outbreak.preventionKey) } < /p> <
+            /div> <
             div className = "flex space-x-3 mt-4" >
             <
-            button className = "group flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline" > { t('learnMore') } <
-            /button> <
+            button className = "group flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline" > { t('learnMore') } < /button> <
             button className = "group flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors" >
             <
             Share2 className = "h-4 w-4 mr-1.5 transition-transform group-hover:scale-110" / > { t('shareAlert') } <
@@ -1592,16 +1356,12 @@ const Alerts = () => {
         );
     };
 
-
     const VaccineCard = ({ titleKey, descKey, color, icon: Icon, index }) => ( <
         div className = "relative p-5 rounded-xl overflow-hidden animate-card-pop-in bg-white/70 dark:bg-gray-800/70 backdrop-blur-md shadow-lg"
         style = {
             { animationDelay: `${(mockOutbreaks.length + index) * 150}ms` } } >
         <
-        div className = { `absolute inset-0 bg-gradient-to-br from-${color}-400 to-${color}-600 opacity-10 dark:opacity-20` } >
-        < /div>
-
-        <
+        div className = { `absolute inset-0 bg-gradient-to-br from-${color}-400 to-${color}-600 opacity-10 dark:opacity-20` } > < /div> <
         div className = "flex items-center relative" >
         <
         div className = { `flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-${color}-400 to-${color}-600 text-white flex items-center justify-center shadow-lg` } >
@@ -1621,9 +1381,7 @@ const Alerts = () => {
     return ( <
         div className = "max-w-7xl mx-auto px-4 py-6" >
         <
-        h2 className = "text-2xl font-bold text-gray-900 dark:text-white mb-6" > { t('alertsTitle') } < /h2>
-
-        <
+        h2 className = "text-2xl font-bold text-gray-900 dark:text-white mb-6" > { t('alertsTitle') } < /h2> <
         div className = "space-y-6" > {
             mockOutbreaks.map((outbreak, index) => ( <
                 AlertCard key = { outbreak.id }
@@ -1632,13 +1390,10 @@ const Alerts = () => {
                 />
             ))
         } <
-        /div>
-
-        <
+        /div> <
         div className = "mt-10" >
         <
-        h3 className = "text-xl font-semibold text-gray-900 dark:text-white mb-4" > { t('vaccinationRemindersTitle') } <
-        /h3> <
+        h3 className = "text-xl font-semibold text-gray-900 dark:text-white mb-4" > { t('vaccinationRemindersTitle') } < /h3> <
         div className = "space-y-4" >
         <
         VaccineCard titleKey = "covidBoosterTitle"
@@ -1659,8 +1414,6 @@ const Alerts = () => {
     );
 };
 
-
-// Profile Component
 const Profile = () => {
         const { t, userProfile, saveUserProfile } = useContext(AppContext);
         const [isEditing, setIsEditing] = useState(false);
@@ -1697,8 +1450,7 @@ const Profile = () => {
                 div >
                 <
                 label htmlFor = { name }
-                className = "block text-sm font-medium text-gray-700 dark:text-gray-300" >
-                { label } <
+                className = "block text-sm font-medium text-gray-700 dark:text-gray-300" > { label } <
                 /label> <
                 input type = "text"
                 id = { name }
@@ -1711,7 +1463,6 @@ const Profile = () => {
                 <
                 /div>
             );
-
 
             return ( <
                 div className = "max-w-4xl mx-auto px-4 py-6" >
@@ -1770,9 +1521,7 @@ const Profile = () => {
                         placeholder = "e.g., A+, O-" / >
                         <
                         /div> <
-                        /div>
-
-                        <
+                        /div> <
                         div className = "border-t border-gray-200 dark:border-gray-700 pt-6" >
                         <
                         h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-4" > { t('healthInfo') } < /h3> <
@@ -1789,17 +1538,12 @@ const Profile = () => {
                         placeholder = { t('egConditions') }
                         /> <
                         /div> <
-                        /div>
-
-                        <
+                        /div> <
                         div className = "flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700" >
                         <
                         button onClick = {
-                            () => {
-                                setIsEditing(false);
-                                setTempProfile(userProfile);
-                            }
-                        }
+                            () => { setIsEditing(false);
+                                setTempProfile(userProfile); } }
                         className = "px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500" >
                         Cancel <
                         /button> <
@@ -1829,9 +1573,7 @@ const Profile = () => {
                         placeholder = "A+, O-, ..." / >
                         <
                         /dl> <
-                        /div>
-
-                        <
+                        /div> <
                         div className = "border-t border-gray-200 dark:border-gray-700 pt-6" >
                         <
                         h3 className = "text-lg font-semibold text-gray-900 dark:text-white mb-4" > { t('healthInfo') } < /h3> <
@@ -1855,11 +1597,8 @@ const Profile = () => {
             );
         };
 
-
-        // Navigation Component
         const Navigation = () => {
             const { currentView, setCurrentView, t } = useContext(AppContext);
-
             const navItems = [
                 { id: 'dashboard', icon: Home, label: t('navHome') },
                 { id: 'chatbot', icon: MessageCircle, label: t('navAssistant') },
@@ -1879,11 +1618,7 @@ const Profile = () => {
                             button key = { item.id }
                             onClick = {
                                 () => setCurrentView(item.id) }
-                            className = { `flex flex-col items-center justify-center py-2 rounded-lg transition-colors w-20 ${
-                  currentView === item.id
-                    ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/50'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400'
-                }` } >
+                            className = { `flex flex-col items-center justify-center py-2 rounded-lg transition-colors w-20 ${currentView === item.id ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/50' : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400'}` } >
                             <
                             IconComponent className = "h-5 w-5 mb-1" / >
                             <
@@ -1898,9 +1633,6 @@ const Profile = () => {
             );
         };
 
-
-        // ** NEW VIEWS / COMPONENTS **
-
         const FirstAidGuide = () => {
             const { t, language } = useContext(AppContext);
             const [selectedGuide, setSelectedGuide] = useState(null);
@@ -1914,13 +1646,8 @@ const Profile = () => {
                     className = "flex items-center text-sm text-blue-500 hover:underline mb-4" >
                     &
                     larr; Back to all guides <
-                    /button>
-
-                    <
-                    h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-4" > { t(selectedGuide.titleKey) } <
-                    /h2>
-
-                    <
+                    /button> <
+                    h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-4" > { t(selectedGuide.titleKey) } < /h2> <
                     div className = "space-y-4" > {
                         selectedGuide.steps[language].map((step, index) => ( <
                             div key = { index }
@@ -1942,10 +1669,7 @@ const Profile = () => {
             return ( <
                 div className = "max-w-7xl mx-auto px-4 py-6" >
                 <
-                h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-6" > { t('firstAidTitle') } <
-                /h2>
-
-                <
+                h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-6" > { t('firstAidTitle') } < /h2> <
                 div className = "grid grid-cols-1 md:grid-cols-2 gap-6" > {
                     mockFirstAidGuides.map((guide, index) => ( <
                         button key = { guide.id }
@@ -1957,8 +1681,7 @@ const Profile = () => {
                         <
                         div className = "p-6" >
                         <
-                        h3 className = "text-xl font-semibold text-gray-900 dark:text-white" > { t(guide.titleKey) } <
-                        /h3> <
+                        h3 className = "text-xl font-semibold text-gray-900 dark:text-white" > { t(guide.titleKey) } < /h3> <
                         /div> <
                         /button>
                     ))
@@ -1967,7 +1690,6 @@ const Profile = () => {
                 /div>
             );
         };
-
 
         const AshaWorkerDirectory = () => {
             const { t } = useContext(AppContext);
@@ -1980,10 +1702,7 @@ const Profile = () => {
             return ( <
                 div className = "max-w-7xl mx-auto px-4 py-6" >
                 <
-                h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-4" > { t('ashaDirectoryTitle') } <
-                /h2>
-
-                <
+                h2 className = "text-3xl font-bold text-gray-900 dark:text-white mb-4" > { t('ashaDirectoryTitle') } < /h2> <
                 div className = "relative mb-6" >
                 <
                 input type = "text"
@@ -1996,9 +1715,7 @@ const Profile = () => {
                 <
                 Search className = "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" / >
                 <
-                /div>
-
-                <
+                /div> <
                 div className = "space-y-4" > {
                     filteredWorkers.map((worker, index) => ( <
                         div key = { worker.id }
@@ -2021,6 +1738,106 @@ const Profile = () => {
                 } <
                 /div> <
                 /div>
+            );
+        };
+
+
+        // Main App Component
+        const HealthcareApp = () => {
+            const [currentView, setCurrentView] = useState('dashboard');
+            const [darkMode, setDarkMode] = useState(false);
+            const [language, setLanguage] = useState('en');
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState(null);
+            const [showWelcome, setShowWelcome] = useState(true);
+            const [userProfile, setUserProfile] = useState({ name: '', age: '', bloodGroup: '', allergies: '', conditions: '' });
+
+            useEffect(() => {
+                try {
+                    const savedProfile = localStorage.getItem('sehatMitraProfile');
+                    if (savedProfile) {
+                        setUserProfile(JSON.parse(savedProfile));
+                    }
+                } catch (e) {
+                    console.error("Failed to parse user profile from localStorage", e);
+                    setError("Could not load your saved profile.");
+                }
+                const welcomeTimer = setTimeout(() => {
+                    setShowWelcome(false);
+                }, 2500);
+
+                return () => clearTimeout(welcomeTimer);
+            }, []);
+
+            const saveUserProfile = (profile) => {
+                try {
+                    localStorage.setItem('sehatMitraProfile', JSON.stringify(profile));
+                    setUserProfile(profile);
+                } catch (e) {
+                    console.error("Failed to save user profile to localStorage", e);
+                    setError("Your profile could not be saved.");
+                }
+            };
+
+            useEffect(() => {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }, [darkMode]);
+
+            const t = (key) => {
+                return translations[key] ? .[language] || translations[key] ? .['en'] || key;
+            };
+
+            const contextValue = { currentView, setCurrentView, darkMode, setDarkMode, language, setLanguage, isMenuOpen, setIsMenuOpen, loading, setLoading, error, setError, t, userProfile, saveUserProfile };
+
+            const renderContent = () => {
+                if (error) {
+                    return <ErrorMessage message = { error }
+                    onRetry = {
+                        () => setError(null) }
+                    />;
+                }
+                switch (currentView) {
+                    case 'dashboard':
+                        return <Dashboard / > ;
+                    case 'chatbot':
+                        return <Chatbot / > ;
+                    case 'hospitals':
+                        return <Hospitals / > ;
+                    case 'alerts':
+                        return <Alerts / > ;
+                    case 'profile':
+                        return <Profile / > ;
+                    case 'firstAid':
+                        return <FirstAidGuide / > ;
+                    case 'ashaWorkers':
+                        return <AshaWorkerDirectory / > ;
+                    default:
+                        return <Dashboard / > ;
+                }
+            };
+
+            return ( <
+                AppContext.Provider value = { contextValue } >
+                <
+                AppStyles / > { showWelcome && < WelcomeScreen / > } <
+                div className = { `transition-opacity duration-500 ${showWelcome ? "opacity-0" : "opacity-100"}` } >
+                <
+                div className = "aurora-background" > < /div> <
+                div className = "relative bg-gray-50/50 dark:bg-gray-900/50 min-h-screen" >
+                <
+                Header / >
+                <
+                main className = "pb-20" > { renderContent() } < /main> <
+                Navigation / >
+                <
+                /div> <
+                /div> <
+                /AppContext.Provider>
             );
         };
 
